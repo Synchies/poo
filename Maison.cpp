@@ -27,4 +27,22 @@ Maison::Maison(int id, int prix, std::string adresse, std::string vendeur, float
 
             else std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
         }
+
+        std::cout << " --- Maison ajoutée avec succès ! ---" << std::endl;
     }
+
+int Maison::getNbPieces() {
+    return nbPieces;
+}
+
+bool Maison::hasGarage() {
+    return garage;
+}
+
+bool Maison::hasJardin() {
+    return jardin;
+}
+
+bool Maison::hasPiscine() {
+    return piscine;
+}

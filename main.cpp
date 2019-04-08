@@ -1,9 +1,8 @@
 #include "headers/Agence.h"
 #include "headers/string2commande.h"
-#include "headers/commandes.h"
 
-void help() {
-    
+void helpList() {
+
 }
 
 int main() {
@@ -37,7 +36,7 @@ int main() {
                 std::cout << "Commande invalide, tapez @help pour voir la liste des commandes disponibles." << std::endl; 
                 break;
             case help:
-                help();
+                helpList();
                 break;
             case quit:
                 continuer = false;

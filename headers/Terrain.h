@@ -9,6 +9,9 @@ class Terrain: public Bien {
     public:
         Terrain();
         Terrain(int, int, std::string, std::string, float, bool, bool = 1);
+
+        // accesseurs
+        bool isConstructible();
 };
 
 #endif

@@ -40,6 +40,8 @@ class Agence {
         void AjoutMaison(Maison);
         void AjoutTerrain(Terrain);
         void AjoutLocal(LocalPro);
+        void listeClients();
+        void listeBiens();
 
         // accesseur
         int getLastIdBien();

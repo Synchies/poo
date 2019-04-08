@@ -23,4 +23,14 @@ LocalPro::LocalPro(int id, int prix, std::string adresse, std::string vendeur, f
 
             else std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
         }
+
+        std::cout << " --- Local Professionnel ajouté avec succès ! ---" << std::endl;
     }
+
+float LocalPro::getVitrine() {
+    return vitrine;
+}
+
+bool LocalPro::hasStockage() {
+    return stockage;
+}

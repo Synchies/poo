@@ -13,7 +13,13 @@ class Bien {
     public:
         Bien();
         Bien(int, int, std::string, std::string, float);
+
+        // accesseurs
         int getId();
+        float getPrix();
+        std::string getAdresse();
+        std::string getVendeur();
+        float getSurface();
 };
 
 #endif

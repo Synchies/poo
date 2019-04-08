@@ -21,4 +21,10 @@ Terrain::Terrain(int id, int prix, std::string adresse, std::string vendeur, flo
 
             else std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
         }
+
+        std::cout << " --- Terrain ajouté avec succès ! ---" << std::endl;
     }
+
+bool Terrain::isConstructible() {
+    return constructible;
+}

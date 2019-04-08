@@ -10,6 +10,10 @@ class LocalPro : public Bien {
     public:
         LocalPro();
         LocalPro(int, int, std::string, std::string, float, float, bool, bool = 1);
+
+        // accesseurs
+        float getVitrine();
+        bool hasStockage();
 };
 
 #endif

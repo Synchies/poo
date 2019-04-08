@@ -12,3 +12,19 @@ Bien::Bien(int _id, int _prix, std::string _adresse, std::string _vendeur, float
 int Bien::getId() {
     return id;
 }
+
+float Bien::getPrix() {
+    return prix;
+}
+
+std::string Bien::getAdresse() {
+    return adresse;
+}
+
+std::string Bien::getVendeur() {
+    return vendeur;
+}
+
+float Bien::getSurface() {
+    return surface;
+}

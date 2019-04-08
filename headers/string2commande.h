@@ -11,7 +11,9 @@ enum commandes {
     help,
     quit,
     nouveauClient,
-    nouveauBien
+    nouveauBien,
+    listeBiens,
+    listeClients
 };
 
 // conversion d'une commande entrée par l'utilisateur (string) en commande pour le programme (enum)

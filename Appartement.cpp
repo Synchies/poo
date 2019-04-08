@@ -31,4 +31,29 @@ Appartement::Appartement(int id, int prix, std::string adresse, std::string vend
             else std::cout << "Erreur : impossible d'ouvrir le fichier biens.txt." << std::endl;
         }
 
+        std::cout << " --- Appartement ajouté avec succès ! ---" << std::endl;
     }
+
+int Appartement::getNbPieces() {
+    return nbPieces;
+}
+
+int Appartement::getEtage() {
+    return etage;
+}
+
+int Appartement::getTotalApparts() {
+    return totalApparts;
+}
+
+bool Appartement::hasGarage() {
+    return garage;
+}
+
+bool Appartement::hasCave() {
+    return cave;
+}
+
+bool Appartement::hasBalcon() {
+    return balcon;
+}

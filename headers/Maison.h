@@ -10,6 +10,12 @@ class Maison: public Bien {
     public:
         Maison();
         Maison(int, int, std::string, std::string, float, int, bool, bool, bool, bool = 1);
+
+        // accesseurs
+        int getNbPieces();
+        bool hasGarage();
+        bool hasJardin();
+        bool hasPiscine();
 };
 
 #endif
