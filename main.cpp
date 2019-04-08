@@ -2,6 +2,10 @@
 #include "headers/string2commande.h"
 #include "headers/commandes.h"
 
+void help() {
+    
+}
+
 int main() {
     bool continuer = true;
     Agence A = Agence("UnToitPourTous");
@@ -33,6 +37,7 @@ int main() {
                 std::cout << "Commande invalide, tapez @help pour voir la liste des commandes disponibles." << std::endl; 
                 break;
             case help:
+                help();
                 break;
             case quit:
                 continuer = false;
@@ -42,6 +47,12 @@ int main() {
                 break;
             case nouveauBien:
                 A.AjoutBien("nouveau", (A.getLastIdBien())+1);
+                break;
+            case listeBiens:
+                A.listeBiens();
+                break;
+            case listeClients:
+                A.listeClients();
                 break;
         }
     }
