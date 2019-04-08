@@ -1,4 +1,4 @@
-#include "headers/commandes.h"
+/*#include "headers/commandes.h"
 
 // vide le buffer pour les entrées utilisateur
 void clearBuffer() {
@@ -287,4 +287,4 @@ void newBien() {
     else if (typeBien == "L") {
 
     }
-}
+}*/

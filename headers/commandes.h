@@ -1,4 +1,4 @@
-#ifndef commandes_h
+/*#ifndef commandes_h
 #define commandes_h
 
 #include <iostream>
@@ -9,4 +9,4 @@
 void newClient();
 void newBien();
 
-#endif
+#endif*/

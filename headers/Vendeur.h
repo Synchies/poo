@@ -9,7 +9,7 @@ class Vendeur: public Client {
         std::vector<int> biens;
     public:
         Vendeur();
-        Vendeur(int, std::string, std::string);
+        Vendeur(int, std::string, std::string, bool = 1);
         void AjoutBien(int);
 };
 

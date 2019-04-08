@@ -10,7 +10,7 @@ class Acheteur: public Client {
     public:
         // constructeurs
         Acheteur();
-        Acheteur(int, std::string, std::string);
+        Acheteur(int, std::string, std::string, bool = 1);
 
         // méthodes
         void AjoutVisite(int, bool, int);

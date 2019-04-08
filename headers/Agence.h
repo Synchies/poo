@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <map>
 #include <vector>
+#include <limits>
+#include <algorithm>
 
 #include "Client.h"
 #include "Acheteur.h"
@@ -32,6 +35,7 @@ class Agence {
 
         // méthodes
         void AjoutClient(std::string);
+        void AjoutBien(std::string, int = 0);
         void AjoutAppartement(Appartement);
         void AjoutMaison(Maison);
         void AjoutTerrain(Terrain);

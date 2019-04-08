@@ -41,7 +41,7 @@ int main() {
                 A.AjoutClient("nouveau");
                 break;
             case nouveauBien:
-                AjoutBien("nouveau", (A.getLastIdBien())+1);
+                A.AjoutBien("nouveau", (A.getLastIdBien())+1);
                 break;
         }
     }

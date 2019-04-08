@@ -9,7 +9,7 @@ class Maison: public Bien {
         bool garage, jardin, piscine;
     public:
         Maison();
-        Maison(int, int, std::string, std::string, float, int, bool, bool, bool);
+        Maison(int, int, std::string, std::string, float, int, bool, bool, bool, bool = 1);
 };
 
 #endif

@@ -40,10 +40,9 @@ void Agence::AjoutClient(std::string action) {
     if (action == "lire") {
         std::ifstream aFile("files/acheteurs.txt", std::ios::in);
         std::ifstream vFile("files/vendeurs.txt", std::ios::in);
-        std::ifstream bFile("files/biens.txt", std::ios::in);
 
         // contenu de l'entrée utilisateur.
-        std::string contenu;
+        std::string contenu = "";
         // permet de compter les lignes parcourues.
         int curseur;
 
@@ -61,7 +60,7 @@ void Agence::AjoutClient(std::string action) {
                         break;
                     case 2:
                         adresse = contenu;
-                        Acheteur acheteur = Acheteur(id, nom, adresse);
+                        Acheteur acheteur = Acheteur(id, nom, adresse, 0);
                         clients[id] = acheteur;
                         break;
                 }
@@ -85,7 +84,7 @@ void Agence::AjoutClient(std::string action) {
                         break;
                     case 2:
                         adresse = contenu;
-                        Vendeur vendeur = Vendeur(id, nom, adresse);
+                        Vendeur vendeur = Vendeur(id, nom, adresse, 0);
                         clients[id] = vendeur;
                         break;
                 }
@@ -93,6 +92,7 @@ void Agence::AjoutClient(std::string action) {
                 curseur++;
             }
         }
+       std:: cout << "ok" << std::endl;
     }
 
     else {
@@ -137,7 +137,7 @@ void Agence::AjoutClient(std::string action) {
                 break;
         }
 
-        std::map<int, Clients> ::iterator it = clients.end();
+        std::map<int, Client> ::iterator it = clients.end();
 
         if (typeClient == "A")
             Acheteur *c = new Acheteur(it->first, nomClient, adresseClient);
@@ -167,8 +167,15 @@ void Agence::AjoutLocal(LocalPro L) {
 }
 
 // AjoutBien("lire") va lire dans le fichiers biens.txt les différents bien, pour initialiser le programme au démarrage. AjoutBien("nimportequoi") va simplement ajouter un bien dans le fichier.
-void Agence::AjoutBien(string action, int idBien = 0) {
+void Agence::AjoutBien(std::string action, int idBien) {
     if (action == "lire") {
+        
+        std::ifstream bFile("files/biens.txt", std::ios::in);
+        // contenu de l'entrée utilisateur.
+        std::string contenu;
+        // permet de compter les lignes parcourues.
+        int curseur;
+
         if (bFile) {
             // curseur pour savoir à quel paramètre on se situe, selon le type de bien recontré
             curseur = 0;
@@ -180,14 +187,14 @@ void Agence::AjoutBien(string action, int idBien = 0) {
             int modulo;
 
             while(std::getline(bFile, contenu)) {
-                if (contenu == "a") modulo = 11;
+                if (contenu == "a") modulo = 12;
                 else if (contenu == "m") modulo = 10;
                 else if (contenu == "t") modulo = 7;
                 else if (contenu == "l") modulo = 8;
                 else {
                     switch (modulo) {
-                        case 11:
-                            switch(curseur%11) {
+                        case 12:
+                            switch(curseur%12) {
                                 case 1: id = stoi(contenu);
                                 break;
                                 case 2: prix = stof(contenu);
@@ -200,17 +207,18 @@ void Agence::AjoutBien(string action, int idBien = 0) {
                                 break;
                                 case 6: nbPieces = stoi(contenu);
                                 break;
-                                case 7: etage = contenu == "1";
+                                case 7: etage = stoi(contenu);
                                 break;
-                                case 8: garage = contenu == "1";
+                                case 8: totalApparts = stoi(contenu);
                                 break;
-                                case 9: cave = contenu == "1";
+                                case 9: garage = contenu == "1";
                                 break;
-                                case 10:
+                                case 10: cave = contenu == "1";
+                                break;
+                                case 11:
                                     balcon = contenu == "1";
-                                    Appartement appart = Appartement(id, prix, adresse, vendeur, surface, nbPieces, etage, garage, cave, balcon);
-                                    biens[id] = appart;
-                                    apparts[id] = appart;
+                                    Appartement appart = Appartement(id, prix, adresse, vendeur, surface, nbPieces, etage, totalApparts, garage, cave, balcon, 0);
+                                    AjoutAppartement(appart);
                                     break;
                             }
                             break;
@@ -234,9 +242,8 @@ void Agence::AjoutBien(string action, int idBien = 0) {
                                 break;
                                 case 9:
                                     piscine = contenu == "1";
-                                    Maison maison = Maison(id, prix, adresse, vendeur, surface, nbPieces, garage, jardin, piscine);
-                                    biens[id] = maison;
-                                    maisons[id] = maison;
+                                    Maison maison = Maison(id, prix, adresse, vendeur, surface, nbPieces, garage, jardin, piscine, 0);
+                                    AjoutMaison(maison);
                                     break;
                             }
                             break;
@@ -254,9 +261,8 @@ void Agence::AjoutBien(string action, int idBien = 0) {
                                 break;
                                 case 6:
                                     constructible = contenu == "1";
-                                    Terrain terrain = Terrain(id, prix, adresse, vendeur, surface, constructible);
-                                    biens[id] = terrain;
-                                    terrains[id] = terrain;
+                                    Terrain terrain = Terrain(id, prix, adresse, vendeur, surface, constructible, 0);
+                                    AjoutTerrain(terrain);
                                     break;
                             }
                             break;
@@ -276,9 +282,8 @@ void Agence::AjoutBien(string action, int idBien = 0) {
                                 break;
                                 case 7:
                                     vitrine = contenu == "1";
-                                    LocalPro local = LocalPro(id, prix, adresse, vendeur, surface, stockage, vitrine);
-                                    biens[id] = local;
-                                    locaux[id] = local;
+                                    LocalPro local = LocalPro(id, prix, adresse, vendeur, surface, stockage, vitrine, 0);
+                                    AjoutLocal(local);
                                     break;
                             }
                             break;
@@ -469,7 +474,7 @@ void Agence::AjoutBien(string action, int idBien = 0) {
                             std::cerr << "Erreur : vous devez rentrer oui ou non." << std::endl;
 
                         else if (!errorCin()) {
-                            gcb[itpgj->first] = temp == "oui";
+                            gcb[itgcb->first] = temp == "oui";
                             break;
                         }
                     }
@@ -574,7 +579,7 @@ void Agence::AjoutBien(string action, int idBien = 0) {
             sv["Stockage"] = false;
             sv["Vitrine"] = false;
 
-            for (itsv = sv.begin(); itsv != pgj.end(); itsv++) {
+            for (itsv = sv.begin(); itsv != sv.end(); itsv++) {
                 for (;;) {
                     clearBuffer();
 

@@ -9,7 +9,7 @@ class LocalPro : public Bien {
         bool stockage;
     public:
         LocalPro();
-        LocalPro(int, int, std::string, std::string, float, float, bool);
+        LocalPro(int, int, std::string, std::string, float, float, bool, bool = 1);
 };
 
 #endif

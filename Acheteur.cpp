@@ -1,18 +1,20 @@
 #include "headers/Acheteur.h"
 
 Acheteur::Acheteur() : Client() {}
-Acheteur::Acheteur(int id, std::string nom, std::string adresse) : Client(id, nom, adresse) {
-    std::ofstream bFile("files/acheteurs.txt", std::ios::out | std::ios::app);
+Acheteur::Acheteur(int id, std::string nom, std::string adresse, bool creer) : Client(id, nom, adresse) {
+    if (creer) {
+        std::ofstream bFile("files/acheteurs.txt", std::ios::out | std::ios::app);
 
-    if (bFile) {
-        bFile << id << std::endl;
-        bFile << nom << std::endl;
-        bFile << adresse << std::endl;
+        if (bFile) {
+            bFile << id << std::endl;
+            bFile << nom << std::endl;
+            bFile << adresse << std::endl;
 
-        bFile.close();
+            bFile.close();
+        }
+
+        else std::cout << "Erreur : Ouverture impossible de acheteurs.txt" << std::endl;
     }
-
-    else std::cout << "Erreur : Ouverture impossible de acheteurs.txt" << std::endl;
 }
 
 void Acheteur::AjoutVisite(int id, bool proposition, int prix) {

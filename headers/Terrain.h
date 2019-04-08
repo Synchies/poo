@@ -8,7 +8,7 @@ class Terrain: public Bien {
         bool constructible;
     public:
         Terrain();
-        Terrain(int, int, std::string, std::string, float, bool);
+        Terrain(int, int, std::string, std::string, float, bool, bool = 1);
 };
 
 #endif
