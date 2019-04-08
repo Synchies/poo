@@ -8,11 +8,11 @@
 
 class Client {
     protected:
-        std::string nom;
-        std::string adresse;
+        int id;
+        std::string nom, adresse;
     public:
         Client();
-        Client(std::string, std::string);
+        Client(int, std::string, std::string);
         Client(const Client&);
 
         std::string getNom();

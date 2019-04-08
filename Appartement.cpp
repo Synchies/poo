@@ -28,6 +28,6 @@ Appartement::Appartement(int id, int prix, std::string adresse, std::string vend
             bFile.close();
         }
 
-        else std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
+        else std::cout << "Erreur : impossible d'ouvrir le fichier biens.txt." << std::endl;
 
     }

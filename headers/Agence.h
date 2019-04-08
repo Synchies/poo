@@ -18,21 +18,28 @@
 class Agence {
     protected:
         std::string nom;
-        std::map<std::string, Client> clients;
+        std::map<int, Client> clients;
+        std::map<int, Bien> biens; // répertoire de biens, sans les informations propres aux biens particuliers
         std::map<int, Appartement> apparts;
         std::map<int, Maison> maisons;
         std::map<int, Terrain> terrains;
         std::map<int, LocalPro> locaux;
     public:
+        // constructeurs
         Agence();
         Agence(std::string);
         Agence(const Agence&);
 
-        void AjoutClient(Client);
+        // méthodes
+        void AjoutClient(std::string);
         void AjoutAppartement(Appartement);
         void AjoutMaison(Maison);
         void AjoutTerrain(Terrain);
         void AjoutLocal(LocalPro);
+
+        // accesseur
+        int getLastIdBien();
+        int getLastIdClient();
 };
 
 #endif

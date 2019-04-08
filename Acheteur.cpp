@@ -1,10 +1,11 @@
 #include "headers/Acheteur.h"
 
 Acheteur::Acheteur() : Client() {}
-Acheteur::Acheteur(std::string nom, std::string adresse) : Client(nom, adresse) {
+Acheteur::Acheteur(int id, std::string nom, std::string adresse) : Client(id, nom, adresse) {
     std::ofstream bFile("files/acheteurs.txt", std::ios::out | std::ios::app);
 
     if (bFile) {
+        bFile << id << std::endl;
         bFile << nom << std::endl;
         bFile << adresse << std::endl;
 

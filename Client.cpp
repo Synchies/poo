@@ -2,11 +2,13 @@
 
 Client::Client() {}
 
-Client::Client(std::string _nom, std::string _adresse) :
+Client::Client(int _id, std::string _nom, std::string _adresse) :
+    id(_id),
     nom(_nom),
     adresse(_adresse) {}
 
 Client::Client(const Client& c) :
+    id(c.id),
     nom(c.nom),
     adresse(c.adresse) {}
 

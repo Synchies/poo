@@ -4,7 +4,10 @@
 
 int main() {
     bool continuer = true;
-    Agence* a = new Agence("UnToitPourTous");
+    Agence A = Agence("UnToitPourTous");
+
+    A.AjoutClient("lire");
+    A.AjoutBien("lire");
 
     // MESSAGE D'ACCUEIL
     std::cout << "-------------------------------------------------------------------------------------------------" << std::endl;
@@ -13,7 +16,7 @@ int main() {
     std::cout << "| /!\\ Pour toute information sur les commandes existantes, utilisez la commande \"@help\" /!\\     |" << std::endl;
     std::cout << "| Pour QUITTER le logiciel, tapez \"@quit\"                                                       |" << std::endl;
     std::cout << "-------------------------------------------------------------------------------------------------" << std::endl;
-    system("PAUSE");
+    //system("PAUSE");
 
 
     // LE PROGRAMME TOURNE ET ATTEND DES COMMANDES TANT QUE L'UTILISATEUR N'A PAS APPELE LA COMMANDE POUR QUITTER
@@ -35,10 +38,10 @@ int main() {
                 continuer = false;
                 break;
             case nouveauClient:
-                newClient();
+                A.AjoutClient("nouveau");
                 break;
             case nouveauBien:
-                newBien();
+                AjoutBien("nouveau", (A.getLastIdBien())+1);
                 break;
         }
     }

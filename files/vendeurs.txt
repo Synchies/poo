@@ -1,18 +1,27 @@
+6
 Renaut
 125 avenue des Beaux-Arts
+7
 Nikos
 2 impasse de la Jonquille
+8
 Bernard
 89 rue Emile Zola
+9
 Giroux
 141  Avenue De Marlioz
+10
 Richard
 64  Square de la Couronne
+11
 Lamoureux
 27  rue Banaudon
+12
 Tanguay
 93  rue Léon Dierx
+13
 Asselin
 110  rue Bonneterie
+14
 Dupont
 8 chemin Boueux
