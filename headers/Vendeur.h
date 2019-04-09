@@ -6,11 +6,13 @@
 // classe fille de client
 class Vendeur: public Client {
     protected:
-        std::vector<int> biens;
+        std::map<int, Bien> biens;
     public:
         Vendeur();
-        Vendeur(int, std::string, std::string, bool = 1);
-        void AjoutBien(int);
+        Vendeur(int, std::string, std::string, std::string, bool = 1);
+        void AjoutBien(int, Bien);
+
+        virtual void Affiche(bool = 1) const;
 };
 
 #endif

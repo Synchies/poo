@@ -13,7 +13,9 @@ enum commandes {
     nouveauClient,
     nouveauBien,
     listeBiens,
-    listeClients
+    listeClients,
+    rechercheClient,
+    rechercheBien
 };
 
 // conversion d'une commande entrée par l'utilisateur (string) en commande pour le programme (enum)

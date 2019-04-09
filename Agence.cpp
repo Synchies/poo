@@ -35,7 +35,7 @@ Agence::Agence(const Agence& a) :
     nom(a.nom) {}
 
 // AjoutClient("lire") va lire les clients dans les fichiers, pour charger le programme au lancement. AjoutClient("nimportequoi") va ajouter un client à la base de données (donc écrire dans le fichier).
-void Agence::AjoutClient(std::string action) {
+void Agence::AjoutClient(std::string action, std::string typeClient) {
 
     if (action == "lire") {
         std::ifstream aFile("files/acheteurs.txt", std::ios::in);
@@ -44,7 +44,7 @@ void Agence::AjoutClient(std::string action) {
         // contenu de l'entrée utilisateur.
         std::string contenu = "";
         // permet de compter les lignes parcourues.
-        int curseur;
+        int curseur = 0;
 
         if (aFile) {
             std::string nom, adresse;
@@ -54,14 +54,15 @@ void Agence::AjoutClient(std::string action) {
                 switch (curseur%3) {
                     case 0:
                         id = stoi(contenu);
+                        std::cout << id << std::endl;
                         break;
                     case 1:
                         nom = contenu;
                         break;
                     case 2:
                         adresse = contenu;
-                        Acheteur acheteur = Acheteur(id, nom, adresse, 0);
-                        clients[id] = acheteur;
+                        Acheteur acheteur = Acheteur(id, nom, adresse, "A", 0);
+                        clients[id] = acheteurs[id] = acheteur;
                         break;
                 }
 
@@ -84,8 +85,8 @@ void Agence::AjoutClient(std::string action) {
                         break;
                     case 2:
                         adresse = contenu;
-                        Vendeur vendeur = Vendeur(id, nom, adresse, 0);
-                        clients[id] = vendeur;
+                        Vendeur vendeur = Vendeur(id, nom, adresse, "V", 0);
+                        clients[id] = vendeurs[id] = vendeur;
                         break;
                 }
 
@@ -96,7 +97,6 @@ void Agence::AjoutClient(std::string action) {
 
     else {
         // informations du client
-        std::string typeClient;
         std::string adresseClient;
         std::string nomClient;
 
@@ -124,24 +124,31 @@ void Agence::AjoutClient(std::string action) {
                 break;
         }
 
-        // boucle pour la saisie du type de client (permet de sécuriser et de redonner sa chance à l'utilisateur)
-        for (;;) {
-            std::cout << "Acheteur/Vendeur ? (Tapez A ou V) : ";
-            std::getline(std::cin, typeClient);
+        if (typeClient == "undefined") {
+            // boucle pour la saisie du type de client (permet de sécuriser et de redonner sa chance à l'utilisateur)
+            for (;;) {
+                std::cout << "Acheteur/Vendeur ? (Tapez A ou V) : ";
+                std::getline(std::cin, typeClient);
 
-            if (typeClient != "A" && typeClient != "V" || typeClient.size() > 1)
-                std::cerr << "Erreur : Vous devez saisir A ou V." << std::endl;
+                if (typeClient != "A" && typeClient != "V" || typeClient.size() > 1)
+                    std::cerr << "Erreur : Vous devez saisir A ou V." << std::endl;
 
-            else if (!errorCin())
-                break;
+                else if (!errorCin())
+                    break;
+            }
         }
 
         std::map<int, Client> ::iterator it = clients.end();
 
-        if (typeClient == "A")
-            Acheteur *c = new Acheteur(it->first, nomClient, adresseClient);
-        else
-            Vendeur *c = new Vendeur(it->first, nomClient, adresseClient);
+        if (typeClient == "A") {
+            Acheteur c = Acheteur((it->first)+1, nomClient, adresseClient, "A");
+            clients[c.getId()] = acheteurs[c.getId()] = c;
+        }
+
+        else {
+            Vendeur c = Vendeur((it->first)+1, nomClient, adresseClient, "V");
+            clients[c.getId()] = vendeurs[c.getId()] = c;
+        }
     }
 }
 
@@ -168,7 +175,7 @@ void Agence::AjoutLocal(LocalPro L) {
 // AjoutBien("lire") va lire dans le fichiers biens.txt les différents bien, pour initialiser le programme au démarrage. AjoutBien("nimportequoi") va simplement ajouter un bien dans le fichier.
 void Agence::AjoutBien(std::string action, int idBien) {
     if (action == "lire") {
-        
+
         std::ifstream bFile("files/biens.txt", std::ios::in);
         // contenu de l'entrée utilisateur.
         std::string contenu;
@@ -178,32 +185,33 @@ void Agence::AjoutBien(std::string action, int idBien) {
         if (bFile) {
             // curseur pour savoir à quel paramètre on se situe, selon le type de bien recontré
             curseur = 0;
-            std::string typeBien, adresse, vendeur;
+            std::string typeBien, adresse;
             int id, nbPieces, etage, totalApparts;
-            float prix, surface;
-            bool garage, cave, balcon, vitrine, stockage, jardin, piscine, constructible;
+            float surface, vitrine;
+            int prix, vendeurId;
+            bool garage, cave, balcon, stockage, jardin, piscine, constructible;
             // modulo correspond au nombre de paramètres demandés par la classe.
             int modulo;
 
             while(std::getline(bFile, contenu)) {
                 if (contenu == "a") {
                     modulo = 12;
-                    curseur = 0; 
+                    curseur = 0;
                 }
 
                 else if (contenu == "m") {
                     modulo = 10;
-                    curseur = 0; 
+                    curseur = 0;
                 }
 
                 else if (contenu == "t") {
                     modulo = 7;
-                    curseur = 0; 
+                    curseur = 0;
                 }
 
                 else if (contenu == "l") {
                     modulo = 8;
-                    curseur = 0; 
+                    curseur = 0;
                 }
 
                 else {
@@ -217,7 +225,7 @@ void Agence::AjoutBien(std::string action, int idBien) {
                                 break;
                                 case 3: adresse = contenu;
                                 break;
-                                case 4: vendeur = contenu;
+                                case 4: vendeurId = stoi(contenu);
                                 break;
                                 case 5: surface = stof(contenu);
                                 break;
@@ -233,7 +241,7 @@ void Agence::AjoutBien(std::string action, int idBien) {
                                 break;
                                 case 11:
                                     balcon = contenu == "1";
-                                    Appartement appart = Appartement(id, prix, adresse, vendeur, surface, nbPieces, etage, totalApparts, garage, cave, balcon, 0);
+                                    Appartement appart = Appartement(id, prix, adresse, vendeurId, surface, nbPieces, etage, totalApparts, garage, cave, balcon, 0);
                                     AjoutAppartement(appart);
                                     break;
                             }
@@ -247,7 +255,7 @@ void Agence::AjoutBien(std::string action, int idBien) {
                                 break;
                                 case 3: adresse = contenu;
                                 break;
-                                case 4: vendeur = contenu;
+                                case 4: vendeurId = stoi(contenu);
                                 break;
                                 case 5: surface = stof(contenu);
                                 break;
@@ -259,7 +267,7 @@ void Agence::AjoutBien(std::string action, int idBien) {
                                 break;
                                 case 9:
                                     piscine = contenu == "1";
-                                    Maison maison = Maison(id, prix, adresse, vendeur, surface, nbPieces, garage, jardin, piscine, 0);
+                                    Maison maison = Maison(id, prix, adresse, vendeurId, surface, nbPieces, garage, jardin, piscine, 0);
                                     AjoutMaison(maison);
                                     break;
                             }
@@ -273,13 +281,13 @@ void Agence::AjoutBien(std::string action, int idBien) {
                                 break;
                                 case 3: adresse = contenu;
                                 break;
-                                case 4: vendeur = contenu;
+                                case 4: vendeurId = stoi(contenu);
                                 break;
                                 case 5: surface = stof(contenu);
                                 break;
                                 case 6:
                                     constructible = contenu == "1";
-                                    Terrain terrain = Terrain(id, prix, adresse, vendeur, surface, constructible, 0);
+                                    Terrain terrain = Terrain(id, prix, adresse, vendeurId, surface, constructible, 0);
                                     AjoutTerrain(terrain);
                                     break;
                             }
@@ -293,15 +301,15 @@ void Agence::AjoutBien(std::string action, int idBien) {
                                 break;
                                 case 3: adresse = contenu;
                                 break;
-                                case 4: vendeur = contenu;
+                                case 4: vendeurId = stoi(contenu);
                                 break;
                                 case 5: surface = stof(contenu);
                                 break;
-                                case 6: stockage = contenu == "1";
+                                case 6: vitrine = stof(contenu);
                                 break;
                                 case 7:
-                                    vitrine = stof(contenu);
-                                    LocalPro local = LocalPro(id, prix, adresse, vendeur, surface, stockage, vitrine, 0);
+                                    stockage = contenu == "1";
+                                    LocalPro local = LocalPro(id, prix, adresse, vendeurId, surface, vitrine, stockage, 0);
                                     AjoutLocal(local);
                                     break;
                             }
@@ -318,7 +326,7 @@ void Agence::AjoutBien(std::string action, int idBien) {
         std::string temp;
         std::string typeBien;
         std::vector<std::string> types = {"A", "M", "T", "L"};
-        int prix;
+        int prix, vendeurId;
         std::string adresse, vendeur;
         float surface;
 
@@ -337,6 +345,102 @@ void Agence::AjoutBien(std::string action, int idBien) {
 
             else if (!errorCin())
                 break;
+        }
+
+        for (;;) {
+            clearBuffer();
+
+            std::cout << "Nom du vendeur : ";
+            std::getline(std::cin, vendeur);
+
+            if (vendeur.size() < 2)
+                    std::cerr << "Erreur : Vous devez saisir un nom valide." << std::endl;
+
+            else if (!errorCin()) {
+                std::map<int, Client> ::iterator it;
+                std::map<int, Client> clientsTrouves = findClient(vendeur);
+                if (clientsTrouves.size() == 1) {
+                    it = clientsTrouves.begin();
+                    vendeurId = it->first;
+                    break;
+                }
+
+                else if (clientsTrouves.size() > 1) {
+                    std::cout << "Plusieurs clients portant ce nom ont été trouvés. Choisissez le client correspondant parmi la liste ci-dessous, en entrant son identifiant. Si aucun vendeur ne correspond, tapez \"new\" pour créer un profil :" << std::endl;
+
+                    for (it = clientsTrouves.begin(); it != clientsTrouves.end(); it++) it->second.Affiche(); // on veut appeler Vendeur::Affiche, à revoir
+                    std::cout << "Saisie (identifiant, ou \"new\") : ";
+                    std::getline(std::cin, temp);
+
+                   if (temp == "new") {
+                        // permet de tester si le dernier id est toujours le même (ou non) après le passage de la fonction AjoutClient().
+                        int idLastClient = getLastIdClient();
+                        AjoutClient("nouveau", "V");
+
+                        if (idLastClient == getLastIdClient()) {
+                            std::cout << "Il semble que la création du vendeur ait échouée. Création du bien annulée." << std::endl;
+                            return;
+                        }
+
+                        vendeurId = idLastClient;
+                        break;
+                   }
+
+                   if (!errorCin())
+                        if (temp.find_first_not_of("0123456789.,") != std::string::npos) {
+                            std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
+                            clearBuffer();
+                        }
+
+                        else {
+                            int n = temp.length();
+                            char vendeurIdTemp[n+1];
+                            strcpy(vendeurIdTemp, temp.c_str());
+
+                            if (temp[0]) {
+                                vendeurId = std::stoi(vendeurIdTemp, nullptr, 10);
+
+                                if (!errorCin()) break;
+                            }
+
+                            else
+                                std::cout << "Erreur : vous devez rentrer un nombre positif." << std::endl;
+                        }
+                }
+
+                else {
+                    std::cout << "Ce client n'existe pas. Voulez-vous le créer ? /!\\ nécessaire pour une création de bien /!\\" << std::endl;
+                    for (;;) {
+                        clearBuffer();
+
+                        std::cout << "Réponse (oui/non) : ";
+                        std::getline(std::cin, temp);
+
+                        if (temp.find_first_not_of("ouinon") != std::string::npos) {
+                            std::cout << "Erreur : vous devez rentrer oui ou non." << std::endl;
+                            clearBuffer();
+                        }
+
+                        else {
+                            if (temp != "oui" && temp != "non")
+                                std::cerr << "Erreur : vous devez rentrer oui ou non." << std::endl;
+
+                            else if (!errorCin()) {
+                                if (temp == "oui") {
+                                    AjoutClient("nouveau", "V");
+                                    vendeur = getLastIdClient();
+                                    break;
+                                }
+
+                                else {
+                                    std::cout << "Ajout de bien annulé. Le client n'existe pas, et l'utilisateur n'a pas voulu le créer." << std::endl;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         for (;;) {
@@ -413,20 +517,7 @@ void Agence::AjoutBien(std::string action, int idBien) {
                 break;
         }
 
-        for (;;) {
-            clearBuffer();
-
-            std::cout << "Nom du vendeur : ";
-            std::getline(std::cin, vendeur);
-
-            if (adresse.size() < 2)
-                    std::cerr << "Erreur : Vous devez saisir une adresse valide." << std::endl;
-
-            else if (!errorCin())
-                break;
-        }
-
-        std::cout << "           --- Détails du bien ---" << std::endl;
+        std::cout << "--- Détails du bien ---" << std::endl;
 
         if (typeBien == "A") {
             int nbPieces, etage, totalApparts;
@@ -506,7 +597,8 @@ void Agence::AjoutBien(std::string action, int idBien) {
             cave = gcb["Cave"];
             garage = gcb["Garage"];
 
-            Appartement* appart = new Appartement(idBien, prix, adresse, vendeur, surface, nbPieces, etage, totalApparts, garage, cave, balcon);
+            Appartement appart = Appartement(idBien, prix, adresse, vendeurId, surface, nbPieces, etage, totalApparts, garage, cave, balcon);
+            biens[idBien] = apparts[idBien] = appart;
         }
 
         else if (typeBien == "M") {
@@ -566,7 +658,8 @@ void Agence::AjoutBien(std::string action, int idBien) {
             garage = pgj["Garage"];
             jardin = pgj["Jardin"];
 
-            Maison* maison = new Maison(idBien, prix, adresse, vendeur, surface, nbPieces, garage, jardin, piscine);
+            Maison maison = Maison(idBien, prix, adresse, vendeurId, surface, nbPieces, garage, jardin, piscine);
+            biens[idBien] = maisons[idBien] = maison;
         }
 
         else if (typeBien == "T") {
@@ -589,16 +682,18 @@ void Agence::AjoutBien(std::string action, int idBien) {
                 else if (!errorCin()) constructible = temp == "oui";
             }
 
-            Terrain* terrain = new Terrain(idBien, prix, adresse, vendeur, surface, constructible);
+            Terrain terrain = Terrain(idBien, prix, adresse, vendeurId, surface, constructible);
+            biens[idBien] = terrains[idBien] = terrain;
         }
 
         else if (typeBien == "L") {
-            bool stockage, vitrine;
+            bool stockage;
+            float vitrine;
 
             std::map<std::string, bool> sv;
             std::map<std::string, bool> ::iterator itsv;
             sv["Stockage"] = false;
-            sv["Vitrine"] = false;
+            sv["Vitrine"] = 0;
 
             for (itsv = sv.begin(); itsv != sv.end(); itsv++) {
                 for (;;) {
@@ -627,7 +722,8 @@ void Agence::AjoutBien(std::string action, int idBien) {
             stockage = sv["Stockage"];
             vitrine = sv["Vitrine"];
 
-            LocalPro* localpro = new LocalPro(idBien, prix, adresse, vendeur, surface, stockage, vitrine);
+            LocalPro localpro = LocalPro(idBien, prix, adresse, vendeurId, surface, vitrine, stockage);
+            biens[idBien] = locaux[idBien] = localpro;
         }
     }
 }
@@ -657,75 +753,27 @@ void Agence::listeBiens() {
 
     if (typeBien == "A") {
         std::map<int, Appartement> ::iterator it;
-        for (it = apparts.begin(); it != apparts.end(); it++) {
-            std::cout << "------------------------------------------------------------------------------------------" << std::endl;
-            std::cout << "  Identifiant : "                  << it->first << std::endl;
-            std::cout << "  Prix de vente : "                << it->second.getPrix() << std::endl;
-            std::cout << "  Adresse : "                      << it->second.getAdresse() << std::endl;
-            std::cout << "  Nom du vendeur : "               << it->second.getVendeur() << std::endl;
-            std::cout << "  Surface : "                      << it->second.getSurface() << std::endl;
-            std::cout << "  Nombre de pièces : "             << it->second.getNbPieces() << std::endl;
-            std::cout << "  Balcon : "                       << (it->second.hasBalcon() ? "Oui" : "Non") << std::endl;
-            std::cout << "  Cave : "                         << (it->second.hasCave() ? "Oui" : "Non") << std::endl;
-            std::cout << "  Garage : "                       << (it->second.hasGarage() ? "Oui" : "Non") << std::endl;
-            std::cout << "  Etage : "                        << it->second.getEtage() << std::endl;
-            std::cout << "  Appartements dans l'immeuble : " << it->second.getTotalApparts() << std::endl;
-        }
+        for (it = apparts.begin(); it != apparts.end(); it++) it->second.Affiche();
     }
 
     else if (typeBien == "M") {
         std::map<int, Maison> ::iterator it;
-        for (it = maisons.begin(); it != maisons.end(); it++) {
-            std::cout << "------------------------------------------------------------------------------------------" << std::endl;
-            std::cout << "  Identifiant : "       << it->first << std::endl;
-            std::cout << "  Prix de vente : "     << it->second.getPrix() << std::endl;
-            std::cout << "  Adresse : "           << it->second.getAdresse() << std::endl;
-            std::cout << "  Nom du vendeur : "    << it->second.getVendeur() << std::endl;
-            std::cout << "  Surface : "           << it->second.getSurface() << std::endl;
-            std::cout << "  Nombre de pièces : "  << it->second.getNbPieces() << std::endl;
-            std::cout << "  Garage : "            << (it->second.hasGarage() ? "Oui" : "Non") << std::endl;
-            std::cout << "  Jardin : "            << (it->second.hasJardin() ? "Oui" : "Non") << std::endl;
-            std::cout << "  Piscine : "           << (it->second.hasPiscine() ? "Oui" : "Non") << std::endl;
-        }
+        for (it = maisons.begin(); it != maisons.end(); it++) it->second.Affiche();
     }
 
     else if (typeBien == "T") {
         std::map<int, Terrain> ::iterator it;
-        for (it = terrains.begin(); it != terrains.end(); it++) {
-            std::cout << "------------------------------------------------------------------------------------------" << std::endl;
-            std::cout << "  Identifiant : "           << it->first << std::endl;
-            std::cout << "  Prix de vente : "         << it->second.getPrix() << std::endl;
-            std::cout << "  Adresse : "               << it->second.getAdresse() << std::endl;
-            std::cout << "  Nom du vendeur : "        << it->second.getVendeur() << std::endl;
-            std::cout << "  Surface : "               << it->second.getSurface() << std::endl;
-            std::cout << "  Terrain constructible : " << (it->second.isConstructible() ? "Oui" : "Non") << std::endl;
-        }
+        for (it = terrains.begin(); it != terrains.end(); it++) it->second.Affiche();
     }
 
     else if (typeBien == "L") {
         std::map<int, LocalPro> ::iterator it;
-        for (it = locaux.begin(); it != locaux.end(); it++) {
-            std::cout << "------------------------------------------------------------------------------------------" << std::endl;
-            std::cout << "  Identifiant : "          << it->first << std::endl;
-            std::cout << "  Prix de vente : "        << it->second.getPrix() << std::endl;
-            std::cout << "  Adresse : "              << it->second.getAdresse() << std::endl;
-            std::cout << "  Nom du vendeur : "       << it->second.getVendeur() << std::endl;
-            std::cout << "  Surface : "              << it->second.getSurface() << std::endl;
-            std::cout << "  Taille de la vitrine : " << it->second.getVitrine() << std::endl;
-            std::cout << "  Stockage : "             << (it->second.hasStockage() ? "Oui" : "Non") << std::endl;
-        }
+        for (it = locaux.begin(); it != locaux.end(); it++) it->second.Affiche();
     }
 
     else if (typeBien == "B") {
         std::map<int, Bien> ::iterator it;
-        for (it = biens.begin(); it != biens.end(); it++) {
-            std::cout << "------------------------------------------------------------------------------------------" << std::endl;
-            std::cout << "  Identifiant : "    << it->first << std::endl;
-            std::cout << "  Prix de vente : "  << it->second.getPrix() << std::endl;
-            std::cout << "  Adresse : "        << it->second.getAdresse() << std::endl;
-            std::cout << "  Nom du vendeur : " << it->second.getVendeur() << std::endl;
-            std::cout << "  Surface : "        << it->second.getSurface() << std::endl;
-        }
+        for (it = biens.begin(); it != biens.end(); it++) it->second.Affiche();
     }
 
     else {
@@ -734,11 +782,133 @@ void Agence::listeBiens() {
 }
 
 void Agence::listeClients() {
+    std::string typeClient;
+    std::vector<std::string> types = {"A", "V", "ALL"};
+
+    std::cout << "Choisissez, parmi la liste ci-dessous, le type de clients que vous souhaitez afficher :" << std::endl;
+    std::cout << "Liste de tous les clients, tapez ALL" << std::endl;
+    std::cout << "Liste des acheteurs, tapez A" << std::endl;
+    std::cout << "Liste des vendeurs, tapez V" << std::endl;
+
+    for (;;) {
+        std::cout << "Saisissez la lettre correspondante : ";
+        std::getline(std::cin, typeClient);
+
+        if (typeClient.size() != 1 || std::find(types.begin(), types.end(), typeClient) == types.end())
+            std::cerr << "Erreur : Vous devez saisir A, V, ALL." << std::endl;
+
+        else if (!errorCin())
+            break;
+    }
+
+    if (typeClient == "A") {
+        std::map<int, Acheteur> ::iterator it;
+        for (it = acheteurs.begin(); it != acheteurs.end(); it++) it->second.Affiche(0);
+    }
+
+    else if (typeClient == "V") {
+        std::map<int, Vendeur> ::iterator it;
+        for (it = vendeurs.begin(); it != vendeurs.end(); it++) it->second.Affiche(0);
+    }
+
+    else if (typeClient == "ALL") {
+        std::map<int, Client> ::iterator it;
+        for (it = clients.begin(); it != clients.end(); it++) it->second.Affiche();
+    }
+
+    else {
+        std::cout << "Une erreur est survenue, veuillez réessayer." << std::endl;
+    }
+}
+
+void Agence::rechercherClient() {
+    std::string temp;
+
+    std::cout << "Vous souhaitez filtrer par : " << std::endl;
+    std::cout << "  - Par identifiant client : tapez I" << std::endl;
+    std::cout << "  - Par nom : entrez le nom" << std::endl;
+
+    for (;;) {
+        clearBuffer();
+
+        std::cout << "Entrez votre choix : ";
+        std::getline(std::cin, temp);
+
+        if (!errorCin() && (temp == "I" || temp.size() >= 2)) break;
+        else std::cout << "Erreur : vous devez rentrer I ou un nom." << std::endl;
+    }
+
+    if (temp == "I") {
+        for (;;) {
+            clearBuffer();
+
+            std::cout << "Identifiant client : ";
+            std::getline(std::cin, temp);
+
+            if (temp.find_first_not_of("0123456789") != std::string::npos) {
+                std::cout << "Erreur : vous devez rentrer un nombre positif." << std::endl;
+                clearBuffer();
+            }
+
+            else {
+                if (!errorCin()) {
+                    if (temp.length() != 0) break;
+                    else std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
+                }
+
+                else std::cout << "Erreur : vous devez rentrer un nombre positif." << std::endl;
+            }
+        }
+
+        std::map<int, Client> ::iterator it = clients.find(stoi(temp));
+        std::map<int, Client> ::iterator it2;
+        for (it2 = clients.begin(); it2 != clients.end(); it2++) {
+            std::cout << it2->first << std::endl;
+        }
+        if (it != clients.end()) it->second.Affiche();
+        else std::cout << "Aucun résultat !" << std::endl;
+        return;
+    }
+
+    else {
+        std::map<int, Client> ::iterator it;
+        int count = 0;
+        for (it = clients.begin(); it != clients.end(); it++) {
+            if (temp == it->second.getNom()) {
+                it->second.Affiche();
+                count++;
+            }
+        }
+
+        if (count == 0) {
+            std::cout << "Aucun résultat !" << std::endl;
+        }
+
+        return;
+    }
+}
+
+void Agence::rechercherBien() {
 
 }
 
 int Agence::getLastIdBien() {
     std::map<int, Bien> ::iterator it = biens.end();
-    std::cout << it->first << std::endl;
     return it->first;
+}
+
+int Agence::getLastIdClient() {
+    std::map<int, Client> ::iterator it = clients.end();
+    return it->first;
+}
+
+std::map<int, Client> Agence::findClient(std::string nom) {
+    std::map<int, Client> ::iterator it;
+    std::map<int, Client> listeClientsTrouves;
+
+    for (it = clients.begin(); it != clients.end(); it++) {
+        if (it->second.isVendeur() && it->second.getNom() == nom) listeClientsTrouves[it->first] = it->second;
+    }
+
+    return listeClientsTrouves;
 }

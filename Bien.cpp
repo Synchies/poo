@@ -2,7 +2,7 @@
 
 Bien::Bien() {}
 
-Bien::Bien(int _id, int _prix, std::string _adresse, std::string _vendeur, float _surface) :
+Bien::Bien(int _id, int _prix, std::string _adresse, int _vendeur, float _surface) :
     id(_id),
     prix(_prix),
     adresse(_adresse),
@@ -21,10 +21,22 @@ std::string Bien::getAdresse() {
     return adresse;
 }
 
-std::string Bien::getVendeur() {
+int Bien::getVendeur() {
     return vendeur;
 }
 
 float Bien::getSurface() {
     return surface;
+}
+
+void Bien::Affiche() const {
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  |              Informations Bien               |" << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  | Identifiant bien : " << id << std::endl;
+    std::cout << "  | Prix : " << prix << std::endl;
+    std::cout << "  | Adresse : " << adresse << std::endl;
+    std::cout << "  | Vendeur : " << vendeur << std::endl;
+    std::cout << "  | Surface : " << surface << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
 }

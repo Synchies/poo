@@ -1,7 +1,7 @@
 #include "headers/Terrain.h"
 
 Terrain::Terrain() : Bien() {}
-Terrain::Terrain(int id, int prix, std::string adresse, std::string vendeur, float surface, bool _constructible, bool creer) :
+Terrain::Terrain(int id, int prix, std::string adresse, int vendeur, float surface, bool _constructible, bool creer) :
     Bien(id, prix, adresse, vendeur, surface),
     constructible(_constructible) {
         if (creer) {
@@ -27,4 +27,17 @@ Terrain::Terrain(int id, int prix, std::string adresse, std::string vendeur, flo
 
 bool Terrain::isConstructible() {
     return constructible;
+}
+
+void Terrain::Affiche() {
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  |             Informations Terrain             |" << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  | Identifiant bien : " << id << std::endl;
+    std::cout << "  | Prix : " << prix << std::endl;
+    std::cout << "  | Adresse : " << adresse << std::endl;
+    std::cout << "  | Vendeur : " << vendeur << std::endl;
+    std::cout << "  | Surface : " << surface << std::endl;
+    std::cout << "  | Constructible : " << (constructible ? "Oui" : "Non") << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
 }

@@ -5,7 +5,7 @@ Renaut
 Nikos
 2 impasse de la Jonquille
 8
-Bernard
+Dupont
 89 rue Emile Zola
 9
 Giroux
@@ -25,3 +25,6 @@ Asselin
 14
 Dupont
 8 chemin Boueux
+16
+Bersol
+85 avenue des corails

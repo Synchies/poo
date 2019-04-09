@@ -22,6 +22,8 @@ class Agence {
     protected:
         std::string nom;
         std::map<int, Client> clients;
+        std::map<int, Acheteur> acheteurs;
+        std::map<int, Vendeur> vendeurs;
         std::map<int, Bien> biens; // répertoire de biens, sans les informations propres aux biens particuliers
         std::map<int, Appartement> apparts;
         std::map<int, Maison> maisons;
@@ -34,7 +36,7 @@ class Agence {
         Agence(const Agence&);
 
         // méthodes
-        void AjoutClient(std::string);
+        void AjoutClient(std::string, std::string = "undefined");
         void AjoutBien(std::string, int = 0);
         void AjoutAppartement(Appartement);
         void AjoutMaison(Maison);
@@ -42,6 +44,9 @@ class Agence {
         void AjoutLocal(LocalPro);
         void listeClients();
         void listeBiens();
+        std::map<int, Client> findClient(std::string);
+        void rechercherClient();
+        void rechercherBien();
 
         // accesseur
         int getLastIdBien();

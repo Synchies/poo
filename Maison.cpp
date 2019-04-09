@@ -1,7 +1,7 @@
 #include "headers/Maison.h"
 
 Maison::Maison() : Bien() {}
-Maison::Maison(int id, int prix, std::string adresse, std::string vendeur, float surface, int _nbPieces, bool _garage, bool _jardin, bool _piscine, bool creer) :
+Maison::Maison(int id, int prix, std::string adresse, int vendeur, float surface, int _nbPieces, bool _garage, bool _jardin, bool _piscine, bool creer) :
     Bien (id, prix, adresse, vendeur, surface), 
     nbPieces(_nbPieces),
     garage(_garage),
@@ -45,4 +45,20 @@ bool Maison::hasJardin() {
 
 bool Maison::hasPiscine() {
     return piscine;
+}
+
+void Maison::Affiche() {
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  |             Informations Maison             |" << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  | Identifiant bien : " << id << std::endl;
+    std::cout << "  | Prix : " << prix << std::endl;
+    std::cout << "  | Adresse : " << adresse << std::endl;
+    std::cout << "  | Vendeur : " << vendeur << std::endl;
+    std::cout << "  | Surface : " << surface << std::endl;
+    std::cout << "  | Nombre de pièces : " << nbPieces << std::endl;
+    std::cout << "  | Garage : " << (garage ? "Oui" : "Non") << std::endl;
+    std::cout << "  | Jardin : " << (jardin ? "Oui" : "Non") << std::endl;
+    std::cout << "  | Piscine : " << (piscine ? "Oui" : "Non") << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
 }

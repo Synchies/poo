@@ -1,7 +1,7 @@
 #include "headers/LocalPro.h"
 
 LocalPro::LocalPro() : Bien() {}
-LocalPro::LocalPro(int id, int prix, std::string adresse, std::string vendeur, float surface, float _vitrine, bool _stockage, bool creer) :
+LocalPro::LocalPro(int id, int prix, std::string adresse, int vendeur, float surface, float _vitrine, bool _stockage, bool creer) :
     Bien(id, prix, adresse, vendeur, surface),
     vitrine(_vitrine),
     stockage(_stockage) {
@@ -15,8 +15,8 @@ LocalPro::LocalPro(int id, int prix, std::string adresse, std::string vendeur, f
                 bFile << adresse << std::endl;
                 bFile << vendeur << std::endl;
                 bFile << surface << std::endl;
-                bFile << _stockage << std::endl;
                 bFile << _vitrine << std::endl;
+                bFile << _stockage << std::endl;
 
                 bFile.close();
             }
@@ -33,4 +33,18 @@ float LocalPro::getVitrine() {
 
 bool LocalPro::hasStockage() {
     return stockage;
+}
+
+void LocalPro::Affiche() {
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  |            Informations LocalPro             |" << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  | Identifiant bien : " << id << std::endl;
+    std::cout << "  | Prix : " << prix << std::endl;
+    std::cout << "  | Adresse : " << adresse << std::endl;
+    std::cout << "  | Vendeur : " << vendeur << std::endl;
+    std::cout << "  | Surface : " << surface << std::endl;
+    std::cout << "  | Vitrine : " << vitrine << std::endl;
+    std::cout << "  | Stockage : " << (stockage ? "Oui" : "Non") << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
 }

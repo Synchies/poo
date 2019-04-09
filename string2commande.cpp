@@ -9,7 +9,9 @@ commandes string2commande(std::string commande) {
         { "@nouveauClient", nouveauClient },
         { "@nouveauBien", nouveauBien },
         { "@listeBiens", listeBiens },
-        { "@listeClients", listeClients }
+        { "@listeClients", listeClients },
+        { "@rechercheClient", rechercheClient },
+        { "@rechercheBien", rechercheBien }
     };
 
     // recherche et envoi de la commande (enum) d'après sa correspondance (string)

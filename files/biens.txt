@@ -2,7 +2,7 @@ a
 0
 120000
 5 avenue du Truc
-Nikos
+7
 50
 2
 1
@@ -14,7 +14,7 @@ a
 1
 290000
 7 chemin de l'Evangile
-Lamoureux
+11
 110
 4
 2
@@ -26,7 +26,7 @@ a
 2
 70000
 54 impasse Montparnasse
-Giroux
+9
 18.4
 1
 0
@@ -38,7 +38,7 @@ m
 3
 480000
 17 place de la Concorde
-Richard
+10
 145
 4
 1
@@ -48,7 +48,7 @@ m
 4
 550000
 16 impasse Pasteur
-Renaut
+6
 170
 5
 1
@@ -58,7 +58,7 @@ m
 5
 190000
 99 rue des Seaux
-Tanguay
+12
 65
 3
 0
@@ -68,28 +68,28 @@ t
 6
 860000
 Place des Hommes Grands
-Bernard
+8
 3600
 1
 t
 7
 130000
 1 chemin des Bruyères
-Asselin
+13
 780
 0
 t
 8
 90000
 4 rue Louis de Funès
-Lamoureux
+11
 130
 1
 l
 9
 150000
 3 rue de la Poudreuse
-Giroux
+9
 62.5
 7
 1
@@ -97,7 +97,7 @@ l
 10
 80000
 17 avenue Réno
-Renaut
+6
 27
 3.7
 1
@@ -105,7 +105,26 @@ l
 11
 2400000
 8 avenue des Champs Elysées
-Giroux
+9
 241
 30
+1
+a
+12
+190000
+32 bis rue de la corni�re
+8
+90
+3
+2
+20
+1
+1
+1
+t
+13
+450000
+85 avenue des corails
+16
+1500
 1

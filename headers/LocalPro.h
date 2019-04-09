@@ -9,11 +9,12 @@ class LocalPro : public Bien {
         bool stockage;
     public:
         LocalPro();
-        LocalPro(int, int, std::string, std::string, float, float, bool, bool = 1);
+        LocalPro(int, int, std::string, int, float, float, bool, bool = 1);
 
         // accesseurs
         float getVitrine();
         bool hasStockage();
+        void Affiche();
 };
 
 #endif

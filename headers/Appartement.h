@@ -9,7 +9,7 @@ class Appartement: public Bien {
         bool garage, cave, balcon;
     public:
         Appartement();
-        Appartement(int, int, std::string, std::string, float, int, int, int, bool, bool, bool, bool = 1);
+        Appartement(int, int, std::string, int, float, int, int, int, bool, bool, bool, bool = 1);
 
         // accesseurs
         int getNbPieces();
@@ -18,6 +18,7 @@ class Appartement: public Bien {
         bool hasGarage();
         bool hasCave();
         bool hasBalcon();
+        void Affiche();
 };
 
 #endif

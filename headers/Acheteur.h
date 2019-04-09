@@ -10,11 +10,11 @@ class Acheteur: public Client {
     public:
         // constructeurs
         Acheteur();
-        Acheteur(int, std::string, std::string, bool = 1);
+        Acheteur(int, std::string, std::string, std::string, bool = 1);
 
         // méthodes
         void AjoutVisite(int, bool, int);
-        virtual void Affiche() const;
+        virtual void Affiche(bool = 1) const;
 };
 
 #endif

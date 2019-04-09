@@ -1,7 +1,7 @@
 #include "headers/Appartement.h"
 
 Appartement::Appartement() : Bien() {}
-Appartement::Appartement(int id, int prix, std::string adresse, std::string vendeur, float surface, int _nbPieces, int _etage, int _totalApparts, bool _garage, bool _cave, bool _balcon, bool creer) :
+Appartement::Appartement(int id, int prix, std::string adresse, int vendeur, float surface, int _nbPieces, int _etage, int _totalApparts, bool _garage, bool _cave, bool _balcon, bool creer) :
     Bien(id, prix, adresse, vendeur, surface),
     nbPieces(_nbPieces),
     etage(_etage),
@@ -21,6 +21,7 @@ Appartement::Appartement(int id, int prix, std::string adresse, std::string vend
                 bFile << surface << std::endl;
                 bFile << _nbPieces << std::endl;
                 bFile << _etage << std::endl;
+                bFile << _totalApparts << std::endl;
                 bFile << _garage << std::endl;
                 bFile << _cave << std::endl;
                 bFile << _balcon << std::endl;
@@ -56,4 +57,22 @@ bool Appartement::hasCave() {
 
 bool Appartement::hasBalcon() {
     return balcon;
+}
+
+void Appartement::Affiche() {
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  |             Informations Appartement             |" << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
+    std::cout << "  | Identifiant bien : " << id << std::endl;
+    std::cout << "  | Prix : " << prix << std::endl;
+    std::cout << "  | Adresse : " << adresse << std::endl;
+    std::cout << "  | Vendeur : " << vendeur << std::endl;
+    std::cout << "  | Surface : " << surface << std::endl;
+    std::cout << "  | Nombre de pièces : " << nbPieces << std::endl;
+    std::cout << "  | Etage : " << etage << std::endl;
+    std::cout << "  | Appartements dans l'immeuble : " << totalApparts << std::endl;
+    std::cout << "  | Garage : " << (garage ? "Oui" : "Non") << std::endl;
+    std::cout << "  | Cave : " << (cave ? "Oui" : "Non") << std::endl;
+    std::cout << "  | Balcon : " << (balcon ? "Oui" : "Non") << std::endl;
+    std::cout << "  ------------------------------------------------" << std::endl;
 }

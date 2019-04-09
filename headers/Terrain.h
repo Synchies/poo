@@ -8,10 +8,11 @@ class Terrain: public Bien {
         bool constructible;
     public:
         Terrain();
-        Terrain(int, int, std::string, std::string, float, bool, bool = 1);
+        Terrain(int, int, std::string, int, float, bool, bool = 1);
 
         // accesseurs
         bool isConstructible();
+        void Affiche();
 };
 
 #endif

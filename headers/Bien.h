@@ -7,19 +7,20 @@
 
 class Bien {
     protected:
-        int prix, id;
-        std::string adresse, vendeur;
+        int prix, id, vendeur;
+        std::string adresse;
         float surface;
     public:
         Bien();
-        Bien(int, int, std::string, std::string, float);
+        Bien(int, int, std::string, int, float);
 
         // accesseurs
         int getId();
         float getPrix();
         std::string getAdresse();
-        std::string getVendeur();
+        int getVendeur();
         float getSurface();
+        void Affiche() const;
 };
 
 #endif
