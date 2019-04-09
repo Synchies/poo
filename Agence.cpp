@@ -793,7 +793,7 @@ void Agence::listeClients() {
         std::cout << "Saisissez la lettre correspondante : ";
         std::getline(std::cin, typeClient);
 
-        if (typeClient.size() != 1 || std::find(types.begin(), types.end(), typeClient) == types.end())
+        if (typeClient.size() != 1 && std::find(types.begin(), types.end(), typeClient) == types.end())
             std::cerr << "Erreur : Vous devez saisir A, V, ALL." << std::endl;
 
         else if (!errorCin())
