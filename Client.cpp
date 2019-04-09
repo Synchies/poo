@@ -22,6 +22,7 @@ void Client::Affiche() const {
     std::cout << "|              Informations client             |" << std::endl;
     std::cout << "------------------------------------------------" << std::endl;
     std::cout << "| Identifiant : " << id << std::endl;
+    std::cout << "| Catégorie : " << (typeClient == "V" ? "Vendeur" : "Acheteur") << std::endl;
     std::cout << "| Nom : " << nom << std::endl;
     std::cout << "| Adresse : " << adresse << std::endl;
     std::cout << "------------------------------------------------" << std::endl;

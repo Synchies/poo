@@ -54,7 +54,6 @@ void Agence::AjoutClient(std::string action, std::string typeClient) {
                 switch (curseur%3) {
                     case 0:
                         id = stoi(contenu);
-                        std::cout << id << std::endl;
                         break;
                     case 1:
                         nom = contenu;
@@ -825,8 +824,8 @@ void Agence::rechercherClient() {
     std::string temp;
 
     std::cout << "Vous souhaitez filtrer par : " << std::endl;
-    std::cout << "  - Par identifiant client : tapez I" << std::endl;
-    std::cout << "  - Par nom : entrez le nom" << std::endl;
+    std::cout << "  - Identifiant client : tapez I" << std::endl;
+    std::cout << "  - Nom du client : entrez le nom" << std::endl;
 
     for (;;) {
         clearBuffer();
@@ -861,10 +860,6 @@ void Agence::rechercherClient() {
         }
 
         std::map<int, Client> ::iterator it = clients.find(stoi(temp));
-        std::map<int, Client> ::iterator it2;
-        for (it2 = clients.begin(); it2 != clients.end(); it2++) {
-            std::cout << it2->first << std::endl;
-        }
         if (it != clients.end()) it->second.Affiche();
         else std::cout << "Aucun résultat !" << std::endl;
         return;
@@ -889,7 +884,99 @@ void Agence::rechercherClient() {
 }
 
 void Agence::rechercherBien() {
+    std::string temp;
 
+    std::cout << "Vous souhaitez filtrer par : " << std::endl;
+    std::cout << "  - Surface : tapez S" << std::endl;
+    std::cout << "  - Prix : tapez P" << std::endl;
+
+    for (;;) {
+        clearBuffer();
+
+        std::cout << "Entrez votre choix : ";
+        std::getline(std::cin, temp);
+
+        if (!errorCin() && (temp == "P" || temp == "S")) break;
+        else std::cout << "Erreur : vous devez rentrer S ou P." << std::endl;
+    }
+
+    if (temp == "S") {
+        std::cout << "Nous vous proposerons des surfaces allant jusqu'à +/- 20% de la surface recherchée" << std::endl;
+        for (;;) {
+            clearBuffer();
+
+            std::cout << "Surface : ";
+            std::getline(std::cin, temp);
+
+            if (temp.find_first_not_of("0123456789.") != std::string::npos) {
+                std::cout << "Erreur : vous devez rentrer un nombre positif." << std::endl;
+                clearBuffer();
+            }
+
+            else {
+                if (!errorCin()) {
+                    if (temp.length() != 0 && temp != ".") break;
+                    else std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
+                }
+
+                else std::cout << "Erreur : vous devez rentrer un nombre positif." << std::endl;
+            }
+        }
+
+        std::map<int, Bien> ::iterator it;
+        float tempSurface = stof(temp);
+        float tempSurfaceMin = tempSurface - 0.2*tempSurface;
+        float tempSurfaceMax = tempSurface + 0.2*tempSurface;
+        int count = 0;
+        for (it = biens.begin(); it != biens.end(); it++) {
+            if (tempSurfaceMin <= it->second.getSurface() && tempSurfaceMax >= it->second.getSurface()) {
+                it->second.Affiche();
+                count++;
+            }
+        }
+        if (count == 0) std::cout << "Aucun résultat !" << std::endl;
+        return;
+    }
+
+    else if (temp == "P") {
+        std::cout << "Nous vous proposerons des prix allant jusqu'à +/- 20% du prix recherché" << std::endl;
+        for (;;) {
+            clearBuffer();
+
+            std::cout << "Prix : ";
+            std::getline(std::cin, temp);
+
+            if (temp.find_first_not_of("0123456789") != std::string::npos) {
+                std::cout << "Erreur : vous devez rentrer un nombre positif." << std::endl;
+                clearBuffer();
+            }
+
+            else {
+                if (!errorCin()) {
+                    if (temp.length() != 0) break;
+                    else std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
+                }
+
+                else std::cout << "Erreur : vous devez rentrer un nombre positif." << std::endl;
+            }
+        }
+
+        std::map<int, Bien> ::iterator it;
+        float tempPrix = stof(temp);
+        float tempPrixMin = tempPrix - 0.2*tempPrix;
+        float tempPrixMax = tempPrix + 0.2*tempPrix;
+        int count = 0;
+        for (it = biens.begin(); it != biens.end(); it++) {
+            if (tempPrixMin <= it->second.getPrix() && tempPrixMax >= it->second.getPrix()) {
+                it->second.Affiche();
+                count++;
+            }
+        }
+        if (count == 0) std::cout << "Aucun résultat !" << std::endl;
+        return;
+    }
+    
+    else std::cout << "Une erreur est survenue, veuillez réessayer." << std::endl;
 }
 
 int Agence::getLastIdBien() {
