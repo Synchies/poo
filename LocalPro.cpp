@@ -2,7 +2,7 @@
 
 LocalPro::LocalPro() : Bien() {}
 LocalPro::LocalPro(int id, int prix, std::string adresse, int vendeur, float surface, float _vitrine, bool _stockage, bool creer) :
-    Bien(id, prix, adresse, vendeur, surface),
+    Bien(id, prix, adresse, vendeur, surface, "l"),
     vitrine(_vitrine),
     stockage(_stockage) {
         if (creer) {

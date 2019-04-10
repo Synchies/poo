@@ -474,7 +474,7 @@ void Agence::supprimerBien(int id) {
         else if (itTerrain != terrains.end()) terrains.erase(id);
         else if (itLocaux != locaux.end()) locaux.erase(id);
 
-        remove("/files/biens.txt");
+        remove("files/biens.txt");
         std::ofstream bFile("files/biens.txt", std::ios::out | std::ios::app);
 
         std::string type;

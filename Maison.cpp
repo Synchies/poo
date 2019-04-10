@@ -2,7 +2,7 @@
 
 Maison::Maison() : Bien() {}
 Maison::Maison(int id, int prix, std::string adresse, int vendeur, float surface, int _nbPieces, bool _garage, bool _jardin, bool _piscine, bool creer) :
-    Bien (id, prix, adresse, vendeur, surface), 
+    Bien(id, prix, adresse, vendeur, surface, "m"), 
     nbPieces(_nbPieces),
     garage(_garage),
     jardin(_jardin),

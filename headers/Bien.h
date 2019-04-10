@@ -12,7 +12,7 @@ class Bien {
         float surface;
     public:
         Bien();
-        Bien(int, int, std::string, int, float);
+        Bien(int, int, std::string, int, float, std::string);
 
         // accesseurs
         int getId();

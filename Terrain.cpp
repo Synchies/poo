@@ -2,7 +2,7 @@
 
 Terrain::Terrain() : Bien() {}
 Terrain::Terrain(int id, int prix, std::string adresse, int vendeur, float surface, bool _constructible, bool creer) :
-    Bien(id, prix, adresse, vendeur, surface),
+    Bien(id, prix, adresse, vendeur, surface, "t"),
     constructible(_constructible) {
         if (creer) {
             std::ofstream bFile("files/biens.txt", std::ios::out | std::ios::app);

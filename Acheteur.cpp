@@ -27,7 +27,7 @@ void Acheteur::AjoutVisite(int idBien, bool proposition, int prix) {
         return;
     }
 
-    visites[id] = std::make_pair(proposition, prix);
+    visites[idBien] = std::make_pair(proposition, prix);
     std::cout << "--- Visite ajoutée avec succès ! ---" << std::endl;
 }
 
@@ -52,6 +52,7 @@ void Acheteur::Affiche(bool afficherVisites) const {
     std::cout << "------------------------------------------------" << std::endl;
     std::cout << "|        Informations client (Acheteur)        |" << std::endl;
     std::cout << "------------------------------------------------" << std::endl;
+    std::cout << "| Identifiant : " << id << std::endl;
     std::cout << "| Nom : " << nom << std::endl;
     std::cout << "| Adresse : " << adresse << std::endl;
     if (afficherVisites) {

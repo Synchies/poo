@@ -35,16 +35,6 @@ a
 0
 1
 m
-3
-480000
-17 place de la Concorde
-10
-145
-4
-1
-1
-1
-m
 4
 550000
 16 impasse Pasteur
@@ -103,7 +93,7 @@ l
 1
 l
 11
-2400000
+2.4e+006
 8 avenue des Champs Elysées
 9
 241

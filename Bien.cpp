@@ -2,12 +2,13 @@
 
 Bien::Bien() {}
 
-Bien::Bien(int _id, int _prix, std::string _adresse, int _vendeur, float _surface) :
+Bien::Bien(int _id, int _prix, std::string _adresse, int _vendeur, float _surface, std::string _type) :
     id(_id),
     prix(_prix),
     adresse(_adresse),
     vendeur(_vendeur),
-    surface(_surface){}
+    surface(_surface),
+    type(_type) {}
 
 int Bien::getId() {
     return id;

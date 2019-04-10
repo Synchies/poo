@@ -2,7 +2,7 @@
 
 Appartement::Appartement() : Bien() {}
 Appartement::Appartement(int id, int prix, std::string adresse, int vendeur, float surface, int _nbPieces, int _etage, int _totalApparts, bool _garage, bool _cave, bool _balcon, bool creer) :
-    Bien(id, prix, adresse, vendeur, surface),
+    Bien(id, prix, adresse, vendeur, surface, "a"),
     nbPieces(_nbPieces),
     etage(_etage),
     totalApparts(_totalApparts),
