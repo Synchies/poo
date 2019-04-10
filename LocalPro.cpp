@@ -21,10 +21,12 @@ LocalPro::LocalPro(int id, int prix, std::string adresse, int vendeur, float sur
                 bFile.close();
             }
 
-            else std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
+            else {
+                std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
+                return;
+            }
+            std::cout << " --- Local Professionnel ajouté avec succès ! ---" << std::endl;
         }
-
-        std::cout << " --- Local Professionnel ajouté avec succès ! ---" << std::endl;
     }
 
 float LocalPro::getVitrine() {

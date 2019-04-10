@@ -14,14 +14,20 @@ Vendeur::Vendeur(int id, std::string nom, std::string adresse, std::string typeC
             bFile.close();
         }
 
-        else std::cout << "Erreur : Ouverture impossible de vendeurs.txt" << std::endl;
+        else {
+            std::cout << "Erreur : Ouverture impossible de vendeurs.txt" << std::endl;
+            return;
+        }
+        std::cout << "--- Vendeur ajouté avec succès ! ---" << std::endl;
     }
-
-    std::cout << "--- Vendeur ajouté avec succès ! ---" << std::endl;
 }
 
 void Vendeur::AjoutBien(int id, Bien bien) {
     biens[bien.getId()] = bien;
+}
+
+std::map<int, Bien> Vendeur::getBiens() {
+    return biens;
 }
 
 void Vendeur::Affiche(bool afficherBiens) const {

@@ -47,6 +47,9 @@ class Agence {
         std::map<int, Client> findClient(std::string);
         void rechercherClient();
         void rechercherBien();
+        void ajouterVisite();
+        void realiserVente();
+        void supprimerBien(int);
 
         // accesseur
         int getLastIdBien();

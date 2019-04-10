@@ -29,10 +29,12 @@ Appartement::Appartement(int id, int prix, std::string adresse, int vendeur, flo
                 bFile.close();
             }
 
-            else std::cout << "Erreur : impossible d'ouvrir le fichier biens.txt." << std::endl;
+            else {
+                std::cout << "Erreur : impossible d'ouvrir le fichier biens.txt." << std::endl;
+                return;
+            }
+            std::cout << " --- Appartement ajouté avec succès ! ---" << std::endl;
         }
-
-        std::cout << " --- Appartement ajouté avec succès ! ---" << std::endl;
     }
 
 int Appartement::getNbPieces() {

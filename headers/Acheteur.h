@@ -14,7 +14,11 @@ class Acheteur: public Client {
 
         // méthodes
         void AjoutVisite(int, bool, int);
+        void supprimerVisite(int);
         virtual void Affiche(bool = 1) const;
+
+        // accesseurs
+        bool isVisited(int);
 };
 
 #endif

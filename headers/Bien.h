@@ -8,7 +8,7 @@
 class Bien {
     protected:
         int prix, id, vendeur;
-        std::string adresse;
+        std::string adresse, type;
         float surface;
     public:
         Bien();
@@ -21,6 +21,7 @@ class Bien {
         int getVendeur();
         float getSurface();
         void Affiche() const;
+        std::string getType();
 };
 
 #endif

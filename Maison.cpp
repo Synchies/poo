@@ -25,10 +25,12 @@ Maison::Maison(int id, int prix, std::string adresse, int vendeur, float surface
                 bFile.close();
             }
 
-            else std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
+            else {
+                std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
+                return;
+            }
+            std::cout << " --- Maison ajoutée avec succès ! ---" << std::endl;
         }
-
-        std::cout << " --- Maison ajoutée avec succès ! ---" << std::endl;
     }
 
 int Maison::getNbPieces() {

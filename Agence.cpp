@@ -31,7 +31,9 @@ std::string userInput(std::string message, std::string errorMessage, int minimum
     std::string input;
     for (;;) {
         clearBuffer();
-
+        std::cout << "          --------------------------------" << std::endl;
+        std::cout << "          |      Entrée utilisateur      |" << std::endl;
+        std::cout << "          --------------------------------" << std::endl;
         std::cout << message;
         std::getline(std::cin, input);
 
@@ -111,7 +113,7 @@ void Agence::AjoutClient(std::string action, std::string typeClient) {
             int id;
             curseur = 0;
 
-            while(std::getline(vFile, contenu)) {
+            while (std::getline(vFile, contenu)) {
                 switch (curseur%3) {
                     case 0:
                         id = stoi(contenu);
@@ -140,9 +142,10 @@ void Agence::AjoutClient(std::string action, std::string typeClient) {
         adresseClient = userInput("Saisissez l'adresse du client : ", "Erreur : Vous devez saisir une adresse de client valide.", 5);
 
         if (typeClient == "undefined") {
+            typeClient = userInput("Acheteur/Vendeur ? (Tapez A ou V) : ", "Erreur : Vous devez saisir A ou V.", 1);
             while (typeClient != "A" && typeClient != "V" || typeClient.size() > 1) {
-                typeClient = userInput("Acheteur/Vendeur ? (Tapez A ou V) : ", "Erreur : Vous devez saisir A ou V.", 1);
                 std::cerr << "Erreur : Vous devez saisir A ou V." << std::endl;
+                typeClient = userInput("Acheteur/Vendeur ? (Tapez A ou V) : ", "Erreur : Vous devez saisir A ou V.", 1);
             }
         }
 
@@ -340,9 +343,10 @@ void Agence::AjoutBien(std::string action, int idBien) {
         std::cout << "- Terrain : tapez T" << std::endl;
         std::cout << "- Local Professionnel : tapez L" << std::endl;
 
+        typeBien = userInput("Saisissez la lettre correspondante : ", "Erreur : Vous devez saisir A, M, T ou L.", 1);
         while (typeBien.size() != 1 || std::find(types.begin(), types.end(), typeBien) == types.end()) {
-            typeBien = userInput("Saisissez la lettre correspondante : ", "Erreur : Vous devez saisir A, M, T ou L.", 1);
             std::cerr << "Erreur : Vous devez saisir A, M, T ou L." << std::endl;
+            typeBien = userInput("Saisissez la lettre correspondante : ", "Erreur : Vous devez saisir A, M, T ou L.", 1);
         }
 
         for (;;) {
@@ -486,6 +490,83 @@ void Agence::AjoutBien(std::string action, int idBien) {
     }
 }
 
+void Agence::supprimerBien(int id) {
+    std::map<int, Bien> ::iterator itBien = biens.find(id);
+    std::map<int, Appartement> ::iterator itAppart = apparts.find(id);
+    std::map<int, Maison> ::iterator itMaison = maisons.find(id);
+    std::map<int, Terrain> ::iterator itTerrain = terrains.find(id);
+    std::map<int, LocalPro> ::iterator itLocaux = locaux.find(id);
+
+    if (itBien != biens.end()) {
+        biens.erase(id);
+
+        if (itAppart != apparts.end()) apparts.erase(id);
+        else if (itMaison != maisons.end()) maisons.erase(id);
+        else if (itTerrain != terrains.end()) terrains.erase(id);
+        else if (itLocaux != locaux.end()) locaux.erase(id);
+
+        remove("/files/biens.txt");
+        std::ofstream bFile("files/biens.txt", std::ios::out | std::ios::app);
+
+        std::string type;
+        itAppart = apparts.begin();
+        itMaison = maisons.begin();
+        itTerrain = terrains.begin();
+        itLocaux = locaux.begin();
+
+        if (bFile) {
+            for (itBien = biens.begin(); itBien != biens.end(); itBien++) {
+                type = itBien->second.getType();
+                id = itBien->first;
+
+                bFile << type << std::endl;
+                bFile << id << std::endl;
+                bFile << itBien->second.getPrix() << std::endl;
+                bFile << itBien->second.getAdresse() << std::endl;
+                bFile << itBien->second.getVendeur() << std::endl;
+                bFile << itBien->second.getSurface() << std::endl;
+
+                if (type == "t") {
+                    itTerrain = terrains.find(id);
+
+                    bFile << itTerrain->second.isConstructible() << std::endl;
+                }
+                else if (type == "l") {
+                    itLocaux = locaux.find(id);
+
+                    bFile << itLocaux->second.getVitrine() << std::endl;
+                    bFile << itLocaux->second.hasStockage() << std::endl;
+                }
+                else if (type == "m") {
+                    itMaison = maisons.find(id);
+
+                    bFile << itMaison->second.getNbPieces() << std::endl;
+                    bFile << itMaison->second.hasGarage() << std::endl;
+                    bFile << itMaison->second.hasJardin() << std::endl;
+                    bFile << itMaison->second.hasPiscine() << std::endl;
+                }
+                else if (type == "a") {
+                    itAppart = apparts.find(id);
+
+                    bFile << itAppart->second.getNbPieces() << std::endl;
+                    bFile << itAppart->second.getEtage() << std::endl;
+                    bFile << itAppart->second.getTotalApparts() << std::endl;
+                    bFile << itAppart->second.hasGarage() << std::endl;
+                    bFile << itAppart->second.hasCave() << std::endl;
+                    bFile << itAppart->second.hasBalcon() << std::endl;
+                }
+            }
+            bFile.close();
+        }
+        else std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
+
+        std::cout << "--- Bien supprimé avec succès ! ---" << std::endl;
+        return;
+    }
+
+    std::cout << "--- Bien introuvable. ---" << std::endl;
+}
+
 void Agence::listeBiens() {
 
     std::string typeBien;
@@ -498,9 +579,10 @@ void Agence::listeBiens() {
     std::cout << "Liste des terrains, tapez T" << std::endl;
     std::cout << "Liste des locaux professionnels, tapez L" << std::endl;
 
+    typeBien = userInput("Saisissez la lettre correspondane : ", "Erreur : vous devez rentrer A, M, T, L ou B.", 1);
     while (typeBien.size() != 1 || std::find(types.begin(), types.end(), typeBien) == types.end()) {
-        typeBien = userInput("Saisissez la lettre correspondane : ", "Erreur : vous devez rentrer A, M, T, L ou B.", 1);
         std::cout << "Erreur : vous devez rentrer A, M, T, L ou B." << std::endl;
+        typeBien = userInput("Saisissez la lettre correspondane : ", "Erreur : vous devez rentrer A, M, T, L ou B.", 1);
     }
 
     if (typeBien == "A") {
@@ -542,9 +624,10 @@ void Agence::listeClients() {
     std::cout << "Liste des acheteurs, tapez A" << std::endl;
     std::cout << "Liste des vendeurs, tapez V" << std::endl;
 
+    typeClient = userInput("Saisissez la lettre correspondante : ", "Erreur : Vous devez saisir A, V, ALL.", 1);
     while (typeClient.size() != 1 && std::find(types.begin(), types.end(), typeClient) == types.end()) {
-        typeClient = userInput("Saisissez la lettre correspondante : ", "Erreur : Vous devez saisir A, V, ALL.", 1);
         std::cerr << "Erreur : Vous devez saisir A, V, ALL." << std::endl;
+        typeClient = userInput("Saisissez la lettre correspondante : ", "Erreur : Vous devez saisir A, V, ALL.", 1);
     }
 
     if (typeClient == "A") {
@@ -574,9 +657,10 @@ void Agence::rechercherClient() {
     std::cout << "  - Identifiant client : tapez I" << std::endl;
     std::cout << "  - Nom du client : entrez le nom" << std::endl;
 
+    parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer I ou un nom.", 1);
     while (parametre == "I" || parametre.size() >= 2) {
-        parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer I ou un nom.", 1);
         std::cout << "Erreur : vous devez rentrer I ou un nom." << std::endl;
+        parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer I ou un nom.", 1);
     }
 
     if (parametre == "I") {
@@ -598,10 +682,7 @@ void Agence::rechercherClient() {
             }
         }
 
-        if (count == 0) {
-            std::cout << "Aucun résultat !" << std::endl;
-        }
-
+        if (count == 0) std::cout << "Aucun résultat !" << std::endl;
         return;
     }
 }
@@ -613,9 +694,10 @@ void Agence::rechercherBien() {
     std::cout << "  - Surface : tapez S" << std::endl;
     std::cout << "  - Prix : tapez P" << std::endl;
 
+    parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer S ou P.", 1);
     while (parametre == "P" || parametre == "S") {
-        parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer S ou P.", 1);
         std::cout << "Erreur : vous devez rentrer S ou P." << std::endl;
+        parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer S ou P.", 1);
     }
 
     if (parametre == "S") {
@@ -661,6 +743,95 @@ void Agence::rechercherBien() {
     }
     
     else std::cout << "Une erreur est survenue, veuillez réessayer." << std::endl;
+}
+
+void Agence::ajouterVisite() {
+    int idClient = stoi(userInput("Identifiant du client acheteur : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
+    
+    int idBien = stoi(userInput("Identifiant du bien : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
+    bool proposition = userInput("Proposition d'achat ? (Taper oui/non) : ", "Erreur : vous devez saisir oui ou non", 1, "bool") == "oui";
+    int prix = proposition ? stoi(userInput("Montant de la proposition : ", "Erreur : vous devez rentrer un nombre.", 1, "int")) : -1;
+
+    std::map<int, Acheteur> ::iterator itClient = acheteurs.find(idClient);
+    if (itClient != acheteurs.end()) {
+        std::map<int, Bien> ::iterator itBien = biens.find(idBien);
+
+        if (itBien != biens.end()) {
+            itClient->second.AjoutVisite(idBien, proposition, prix);
+            return;
+        }
+
+        else {
+            std::cout << "Ce bien n'existe pas, voulez-vous le créer ? /!\\ Nécessaire pour la saisie d'une visite /!\\" << std::endl;
+            if (userInput("Saisissez votre choix (tapez oui/non) : ", "Erreur : vous devez saisir oui ou non.", 1, "bool") == "non") {
+                std::cout << "Le bien n'existe pas et l'utilisateur n'a pas voulu le créer. Retour au menu principal." << std::endl;
+                return;
+            }
+            AjoutBien("nouveau");
+
+            itBien = biens.find(idBien);
+            if (itBien != biens.end()) {
+                itClient->second.AjoutVisite(idBien, proposition, prix);
+                return;
+            }
+            else std::cout << "Une erreur interne est survenue. Veuillez réessayer." << std::endl;
+        }
+    }
+
+    else {
+        std::cout << "Ce client n'existe pas, voulez-vous le créer ? /!\\ Nécessaire pour la saisie d'une visite /!\\" << std::endl;
+        if (userInput("Saisissez votre choix (tapez oui/non) : ", "Erreur : vous devez saisir oui ou non.", 1, "bool") == "non") {
+            std::cout << "Le client n'existe pas et l'utilisateur n'a pas voulu le créer. Retour au menu principal." << std::endl;
+            return;
+        }
+
+        AjoutClient("nouveau", "A");
+
+        std::map<int, Acheteur> ::iterator it = acheteurs.find(idClient);
+        if (it != acheteurs.end()) {
+            it->second.AjoutVisite(idBien, proposition, prix);
+            return;
+        }
+        else std::cout << "Une erreur interne est survenue. Veuillez réessayer." << std::endl;
+    }
+}
+
+void Agence::realiserVente() {
+    std::cout << "Munissez-vous de l'identifiant du client acheteur, ainsi que l'identifiant du bien." << std::endl;
+
+    int idBien, idClient;
+    std::map<int, Bien> ::iterator itBien;
+    std::map<int, Acheteur> ::iterator itClient;
+
+    while (itBien != biens.end()) {
+        idBien = stoi(userInput("Saisissez l'identifiant du bien : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
+        itBien = biens.find(idBien);
+        if (itBien == biens.end()) std::cout << "Ce bien n'existe pas." << std::endl;
+    }
+
+    while (itClient != acheteurs.end()) {
+        idClient = stoi(userInput("Saisissez l'identifiant du client : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
+        itClient = acheteurs.find(idClient);
+        if (itClient == acheteurs.end()) std::cout << "Cet acheteur n'existe pas." << std::endl;
+    }
+
+    if (itClient->second.isVisited(idBien)) {
+        std::map<int, Vendeur> ::iterator itVendeur = vendeurs.find(itBien->second.getVendeur());
+        if (itVendeur != vendeurs.end()) {
+            std::map<int, Bien> ::iterator itBienVendeur = itVendeur->second.getBiens().find(idBien);
+            if (itBienVendeur != itVendeur->second.getBiens().end()) {
+                itVendeur->second.getBiens().erase(idBien);
+                supprimerBien(idBien);
+                itClient->second.supprimerVisite(idBien);
+                std::cout << "--- La vente a été réalisée avec succès ! ---" << std::endl;
+                return;
+            }
+            else std::cout << "--- Ce bien n'est pas en vente par ce vendeur. ---" << std::endl;
+        }
+        else std::cout << "--- Vendeur introuvable. ---" << std::endl;
+    }
+    else std::cout << "--- Aucune visite ne correspond à ce client et à ce bien. Retour au menu principal. ---" << std::endl;
+
 }
 
 int Agence::getLastIdBien() {

@@ -7,12 +7,16 @@
 class Vendeur: public Client {
     protected:
         std::map<int, Bien> biens;
+        int azerty;
     public:
         Vendeur();
         Vendeur(int, std::string, std::string, std::string, bool = 1);
         void AjoutBien(int, Bien);
 
         virtual void Affiche(bool = 1) const;
+
+        // accesseurs
+        std::map<int, Bien> getBiens();
 };
 
 #endif

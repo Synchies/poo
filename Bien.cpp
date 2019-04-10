@@ -7,7 +7,7 @@ Bien::Bien(int _id, int _prix, std::string _adresse, int _vendeur, float _surfac
     prix(_prix),
     adresse(_adresse),
     vendeur(_vendeur),
-    surface(_surface) {}
+    surface(_surface){}
 
 int Bien::getId() {
     return id;
@@ -27,6 +27,10 @@ int Bien::getVendeur() {
 
 float Bien::getSurface() {
     return surface;
+}
+
+std::string Bien::getType() {
+    return type;
 }
 
 void Bien::Affiche() const {

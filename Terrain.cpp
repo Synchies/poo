@@ -19,10 +19,12 @@ Terrain::Terrain(int id, int prix, std::string adresse, int vendeur, float surfa
                 bFile.close();
             }
 
-            else std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
+            else {
+                std::cout << "Erreur : Ouverture impossible de biens.txt" << std::endl;
+                return;
+            }
+            std::cout << " --- Terrain ajouté avec succès ! ---" << std::endl;
         }
-
-        std::cout << " --- Terrain ajouté avec succès ! ---" << std::endl;
     }
 
 bool Terrain::isConstructible() {
