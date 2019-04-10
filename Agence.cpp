@@ -29,7 +29,9 @@ bool errorCin() {
 // boucle pour la saisie de l'utilisateur (permet de sécuriser et de redonner sa chance à l'utilisateur)
 std::string userInput(std::string message, std::string errorMessage, int minimumSize, std::string numeral = "none") {
     std::string input;
+    bool error;
     for (;;) {
+        error = 0;
         clearBuffer();
         std::cout << "          --------------------------------" << std::endl;
         std::cout << "          |      Entrée utilisateur      |" << std::endl;
@@ -37,16 +39,21 @@ std::string userInput(std::string message, std::string errorMessage, int minimum
         std::cout << message;
         std::getline(std::cin, input);
 
-        if (input.size() < minimumSize) std::cerr << errorMessage << std::endl;
-            
+        if (input.size() < minimumSize) {
+            std::cerr << errorMessage << std::endl;
+            error = 1;
+        }
+
         else if (numeral != "none") {
             if ((numeral == "float" && input.find_first_not_of("0123456789.,") != std::string::npos) ||
                 (numeral == "int" && input.find_first_not_of("0123456789") != std::string::npos)) {
                 std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
+                error = 1;
             }
 
             else if (numeral == "bool" && input.find_first_not_of("ouinon") != std::string::npos) {
                 std::cout << "Erreur : vous devez entrer oui ou non." << std::endl;
+                error = 1;
             }
 
             else {
@@ -54,11 +61,14 @@ std::string userInput(std::string message, std::string errorMessage, int minimum
                 char inputTemp[n+1];
                 strcpy(inputTemp, input.c_str());
 
-                if (!input[0]) std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
+                if (!input[0]) {
+                    std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
+                    error = 1;
+                }
             }
         }
 
-        if (!errorCin()) {
+        if (!errorCin() && !error) {
             clearBuffer();
             return input;
         }
@@ -66,7 +76,6 @@ std::string userInput(std::string message, std::string errorMessage, int minimum
 }
 
 Agence::Agence() {}
-
 Agence::Agence(std::string _nom) :
     nom(_nom) {}
 
@@ -330,10 +339,9 @@ void Agence::AjoutBien(std::string action, int idBien) {
     }
 
     else {
-        std::string temp;
-        std::string typeBien;
+        std::string temp, typeBien, choix;
         std::vector<std::string> types = {"A", "M", "T", "L"};
-        int prix, vendeurId;
+        int prix, count = 0, idVendeur = -1;
         std::string adresse, vendeur;
         float surface;
 
@@ -349,97 +357,58 @@ void Agence::AjoutBien(std::string action, int idBien) {
             typeBien = userInput("Saisissez la lettre correspondante : ", "Erreur : Vous devez saisir A, M, T ou L.", 1);
         }
 
-        for (;;) {
-            clearBuffer();
+        vendeur = userInput("Nom du vendeur : ", "Erreur : vous devez saisir un nom valide.", 2);
+        std::map<int, Vendeur> ::iterator itVendeur;;
+        std::map<int, Client> VendeursTrouves = findClient(vendeur, 1);
+        std::map<int, Client> ::iterator itVendeursTrouves;
+        if (VendeursTrouves.size() == 1) {
+            itVendeursTrouves = VendeursTrouves.begin();
+            idVendeur = itVendeursTrouves->first;
+        }
 
-            std::cout << "Nom du vendeur : ";
-            std::getline(std::cin, vendeur);
+        else if (VendeursTrouves.size() > 1) {
+            std::cout << "Plusieurs clients portant ce nom ont été trouvés. Choisissez le client correspondant parmi la liste ci-dessous, en entrant \"id\" (vous entrerez par la suite son identifiant). Si aucun vendeur ne correspond, tapez \"new\" pour créer un profil :" << std::endl;
+            for (itVendeursTrouves = VendeursTrouves.begin(); itVendeursTrouves != VendeursTrouves.end(); itVendeursTrouves++) itVendeursTrouves->second.Affiche();
+            
+            choix = userInput("Saisie (\"id\" ou \"new\") : ", "Erreur : vous devez rentrer \"id\" ou \"new\"", 1);
+            while (choix != "new" && choix != "id") {
+                std::cout << "Erreur : vous devez rentrer \"id\" ou \"new\"" << std::endl;
+                choix = userInput("Saisie (\"id\" ou \"new\") : ", "Erreur : vous devez rentrer \"id\" ou \"new\"", 1);
+            }
 
-            if (vendeur.size() < 2)
-                    std::cerr << "Erreur : Vous devez saisir un nom valide." << std::endl;
+            if (choix == "new") {
+                AjoutClient("nouveau", "V");
 
-            else if (!errorCin()) {
-                std::map<int, Client> ::iterator it;
-                std::map<int, Client> clientsTrouves = findClient(vendeur);
-                if (clientsTrouves.size() == 1) {
-                    it = clientsTrouves.begin();
-                    vendeurId = it->first;
-                    break;
+                std::map<int, Vendeur> ::iterator it;
+                for (it = vendeurs.begin(); it != vendeurs.end(); it++) idVendeur = it->first;
+            }
+
+            else {
+                std::map<int, Vendeur> ::iterator it = vendeurs.find(idVendeur);
+
+                idVendeur = stoi(userInput("Identifiant du vendeur : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
+                while (it == vendeurs.end()) {
+                    idVendeur = stoi(userInput("Identifiant du vendeur : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
+                    it = vendeurs.find(idVendeur);
+                    std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
                 }
+            }
+        }
 
-                else if (clientsTrouves.size() > 1) {
-                    std::cout << "Plusieurs clients portant ce nom ont été trouvés. Choisissez le client correspondant parmi la liste ci-dessous, en entrant son identifiant. Si aucun vendeur ne correspond, tapez \"new\" pour créer un profil :" << std::endl;
+        else {
+            std::cout << "Ce vendeur n'existe pas. Voulez-vous le créer ? /!\\ nécessaire pour une création de bien /!\\" << std::endl;
+            bool creerVendeur = userInput("Réponse (oui/non) : ", "Erreur : vous devez rentrer oui ou non.", 3, "bool") == "oui";
 
-                    for (it = clientsTrouves.begin(); it != clientsTrouves.end(); it++) it->second.Affiche(); // on veut appeler Vendeur::Affiche, à revoir
-                    std::cout << "Saisie (identifiant, ou \"new\") : ";
-                    std::getline(std::cin, temp);
+            if (creerVendeur) {
+                AjoutClient("nouveau", "V");
 
-                   if (temp == "new") {
-                        // permet de tester si le dernier id est toujours le même (ou non) après le passage de la fonction AjoutClient().
-                        int idLastClient = getLastIdClient();
-                        AjoutClient("nouveau", "V");
+                std::map<int, Vendeur> ::iterator it;
+                for (it = vendeurs.begin(); it != vendeurs.end(); it++) idVendeur = it->first;
+            }
 
-                        if (idLastClient == getLastIdClient()) {
-                            std::cout << "Il semble que la création du vendeur ait échouée. Création du bien annulée." << std::endl;
-                            return;
-                        }
-
-                        vendeurId = idLastClient;
-                        break;
-                   }
-
-                   if (!errorCin())
-                        if (temp.find_first_not_of("0123456789.,") != std::string::npos) {
-                            std::cout << "Erreur : vous devez rentrer un nombre." << std::endl;
-                            clearBuffer();
-                        }
-
-                        else {
-                            int n = temp.length();
-                            char vendeurIdTemp[n+1];
-                            strcpy(vendeurIdTemp, temp.c_str());
-
-                            if (temp[0]) {
-                                vendeurId = std::stoi(vendeurIdTemp, nullptr, 10);
-                                if (!errorCin()) break;
-                            }
-
-                            else std::cout << "Erreur : vous devez rentrer un nombre positif." << std::endl;
-                        }
-                }
-
-                else {
-                    std::cout << "Ce client n'existe pas. Voulez-vous le créer ? /!\\ nécessaire pour une création de bien /!\\" << std::endl;
-                    for (;;) {
-                        clearBuffer();
-
-                        std::cout << "Réponse (oui/non) : ";
-                        std::getline(std::cin, temp);
-
-                        if (temp.find_first_not_of("ouinon") != std::string::npos) {
-                            std::cout << "Erreur : vous devez rentrer oui ou non." << std::endl;
-                            clearBuffer();
-                        }
-
-                        else {
-                            if (temp != "oui" && temp != "non")
-                                std::cerr << "Erreur : vous devez rentrer oui ou non." << std::endl;
-
-                            else if (!errorCin()) {
-                                if (temp == "oui") {
-                                    AjoutClient("nouveau", "V");
-                                    vendeur = getLastIdClient();
-                                    break;
-                                }
-
-                                else {
-                                    std::cout << "Ajout de bien annulé. Le client n'existe pas, et l'utilisateur n'a pas voulu le créer." << std::endl;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
+            else {
+                std::cout << "Ajout de bien annulé. Le client n'existe pas, et l'utilisateur n'a pas voulu le créer." << std::endl;
+                return;
             }
         }
 
@@ -458,7 +427,7 @@ void Agence::AjoutBien(std::string action, int idBien) {
             bool garage = userInput("Garage ? (Taper oui/non) : ", "Erreur : vous devez rentrer oui ou non.", 1, "bool") == "oui";
             bool cave = userInput("Cave ? (Taper oui/non) : ", "Erreur : vous devez rentrer oui ou non.", 1, "bool") == "oui";
 
-            Appartement appart = Appartement(idBien, prix, adresse, vendeurId, surface, nbPieces, etage, totalApparts, garage, cave, balcon);
+            Appartement appart = Appartement(idBien, prix, adresse, idVendeur, surface, nbPieces, etage, totalApparts, garage, cave, balcon);
             biens[idBien] = apparts[idBien] = appart;
         }
 
@@ -469,14 +438,14 @@ void Agence::AjoutBien(std::string action, int idBien) {
             bool garage = userInput("Garage ? (Taper oui/non) : ", "Erreur : vous devez rentrer oui ou non.", 1, "bool") == "oui";
             bool jardin = userInput("Jardin ? (Taper oui/non) : ", "Erreur : vous devez rentrer oui ou non.", 1, "bool") == "oui";
 
-            Maison maison = Maison(idBien, prix, adresse, vendeurId, surface, nbPieces, garage, jardin, piscine);
+            Maison maison = Maison(idBien, prix, adresse, idVendeur, surface, nbPieces, garage, jardin, piscine);
             biens[idBien] = maisons[idBien] = maison;
         }
 
         else if (typeBien == "T") {
             bool constructible = userInput("Constructible ? (Taper oui/non) : ", "Erreur : vous devez rentrer oui ou non.", 1, "bool") == "oui";
 
-            Terrain terrain = Terrain(idBien, prix, adresse, vendeurId, surface, constructible);
+            Terrain terrain = Terrain(idBien, prix, adresse, idVendeur, surface, constructible);
             biens[idBien] = terrains[idBien] = terrain;
         }
 
@@ -484,7 +453,7 @@ void Agence::AjoutBien(std::string action, int idBien) {
             bool stockage = userInput("Stockage ? (Taper oui/non) : ", "Erreur : vous devez rentrer oui ou non.", 1, "bool") == "oui";
             float vitrine = stof(userInput("Surface vitrine : ", "Erreur : vous devez rentrer un nombre.", 1, "float"));
 
-            LocalPro localpro = LocalPro(idBien, prix, adresse, vendeurId, surface, vitrine, stockage);
+            LocalPro localpro = LocalPro(idBien, prix, adresse, idVendeur, surface, vitrine, stockage);
             biens[idBien] = locaux[idBien] = localpro;
         }
     }
@@ -658,14 +627,13 @@ void Agence::rechercherClient() {
     std::cout << "  - Nom du client : entrez le nom" << std::endl;
 
     parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer I ou un nom.", 1);
-    while (parametre == "I" || parametre.size() >= 2) {
+    while (parametre != "I" && parametre.size() < 2) {
         std::cout << "Erreur : vous devez rentrer I ou un nom." << std::endl;
         parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer I ou un nom.", 1);
     }
 
     if (parametre == "I") {
         parametre = userInput("Identifiant client : ", "Erreur : vous devez rentrer un nombre.", 1, "int");
-
         std::map<int, Client> ::iterator it = clients.find(stoi(parametre));
         if (it != clients.end()) it->second.Affiche();
         else std::cout << "Aucun résultat !" << std::endl;
@@ -695,7 +663,7 @@ void Agence::rechercherBien() {
     std::cout << "  - Prix : tapez P" << std::endl;
 
     parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer S ou P.", 1);
-    while (parametre == "P" || parametre == "S") {
+    while (parametre != "P" && parametre != "S") {
         std::cout << "Erreur : vous devez rentrer S ou P." << std::endl;
         parametre = userInput("Entrez votre choix : ", "Erreur : vous devez rentrer S ou P.", 1);
     }
@@ -747,39 +715,10 @@ void Agence::rechercherBien() {
 
 void Agence::ajouterVisite() {
     int idClient = stoi(userInput("Identifiant du client acheteur : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
-    
-    int idBien = stoi(userInput("Identifiant du bien : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
-    bool proposition = userInput("Proposition d'achat ? (Taper oui/non) : ", "Erreur : vous devez saisir oui ou non", 1, "bool") == "oui";
-    int prix = proposition ? stoi(userInput("Montant de la proposition : ", "Erreur : vous devez rentrer un nombre.", 1, "int")) : -1;
-
     std::map<int, Acheteur> ::iterator itClient = acheteurs.find(idClient);
-    if (itClient != acheteurs.end()) {
-        std::map<int, Bien> ::iterator itBien = biens.find(idBien);
 
-        if (itBien != biens.end()) {
-            itClient->second.AjoutVisite(idBien, proposition, prix);
-            return;
-        }
-
-        else {
-            std::cout << "Ce bien n'existe pas, voulez-vous le créer ? /!\\ Nécessaire pour la saisie d'une visite /!\\" << std::endl;
-            if (userInput("Saisissez votre choix (tapez oui/non) : ", "Erreur : vous devez saisir oui ou non.", 1, "bool") == "non") {
-                std::cout << "Le bien n'existe pas et l'utilisateur n'a pas voulu le créer. Retour au menu principal." << std::endl;
-                return;
-            }
-            AjoutBien("nouveau");
-
-            itBien = biens.find(idBien);
-            if (itBien != biens.end()) {
-                itClient->second.AjoutVisite(idBien, proposition, prix);
-                return;
-            }
-            else std::cout << "Une erreur interne est survenue. Veuillez réessayer." << std::endl;
-        }
-    }
-
-    else {
-        std::cout << "Ce client n'existe pas, voulez-vous le créer ? /!\\ Nécessaire pour la saisie d'une visite /!\\" << std::endl;
+    if (itClient == acheteurs.end()) {
+        std::cout << "Le client n'existe pas, voulez-vous le créer ? /!\\ Nécessaire pour la saisie d'une visite /!\\" << std::endl;
         if (userInput("Saisissez votre choix (tapez oui/non) : ", "Erreur : vous devez saisir oui ou non.", 1, "bool") == "non") {
             std::cout << "Le client n'existe pas et l'utilisateur n'a pas voulu le créer. Retour au menu principal." << std::endl;
             return;
@@ -787,29 +726,46 @@ void Agence::ajouterVisite() {
 
         AjoutClient("nouveau", "A");
 
-        std::map<int, Acheteur> ::iterator it = acheteurs.find(idClient);
-        if (it != acheteurs.end()) {
-            it->second.AjoutVisite(idBien, proposition, prix);
+        std::map<int, Acheteur> ::iterator it;
+        for (it = acheteurs.begin(); it != acheteurs.end(); it++) idClient = it->first;
+    }
+
+    int idBien = stoi(userInput("Identifiant du bien : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
+    std::map<int, Bien> ::iterator itBien = biens.find(idBien);
+
+    if (itBien == biens.end()) {
+        std::cout << "Le bien n'existe pas, voulez-vous le créer ? /!\\ Nécessaire pour la saisie d'une visite /!\\" << std::endl;
+        if (userInput("Saisissez votre choix (tapez oui/non) : ", "Erreur : vous devez saisir oui ou non.", 1, "bool") == "non") {
+            std::cout << "Le bien n'existe pas et l'utilisateur n'a pas voulu le créer. Retour au menu principal." << std::endl;
             return;
         }
-        else std::cout << "Une erreur interne est survenue. Veuillez réessayer." << std::endl;
+
+        AjoutBien("nouveau");
+
+        std::map<int, Bien> ::iterator it;
+        for (it = biens.begin(); it != biens.end(); it++) idBien = it->first;
     }
+
+    bool proposition = userInput("Proposition d'achat ? (Taper oui/non) : ", "Erreur : vous devez saisir oui ou non", 1, "bool") == "oui";
+    int prix = proposition ? stoi(userInput("Montant de la proposition : ", "Erreur : vous devez rentrer un nombre.", 1, "int")) : -1;
+
+    itClient->second.AjoutVisite(idBien, proposition, prix);
 }
 
 void Agence::realiserVente() {
     std::cout << "Munissez-vous de l'identifiant du client acheteur, ainsi que l'identifiant du bien." << std::endl;
 
     int idBien, idClient;
-    std::map<int, Bien> ::iterator itBien;
-    std::map<int, Acheteur> ::iterator itClient;
+    std::map<int, Bien> ::iterator itBien = biens.end();
+    std::map<int, Acheteur> ::iterator itClient = acheteurs.end();
 
-    while (itBien != biens.end()) {
+    while (itBien == biens.end()) {
         idBien = stoi(userInput("Saisissez l'identifiant du bien : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
         itBien = biens.find(idBien);
         if (itBien == biens.end()) std::cout << "Ce bien n'existe pas." << std::endl;
     }
 
-    while (itClient != acheteurs.end()) {
+    while (itClient == acheteurs.end()) {
         idClient = stoi(userInput("Saisissez l'identifiant du client : ", "Erreur : vous devez rentrer un nombre.", 1, "int"));
         itClient = acheteurs.find(idClient);
         if (itClient == acheteurs.end()) std::cout << "Cet acheteur n'existe pas." << std::endl;
@@ -844,12 +800,18 @@ int Agence::getLastIdClient() {
     return it->first;
 }
 
-std::map<int, Client> Agence::findClient(std::string nom) {
+std::map<int, Client> Agence::findClient(std::string nom, bool vendeur) {
     std::map<int, Client> ::iterator it;
     std::map<int, Client> listeClientsTrouves;
 
     for (it = clients.begin(); it != clients.end(); it++) {
-        if (it->second.isVendeur() && it->second.getNom() == nom) listeClientsTrouves[it->first] = it->second;
+        if (vendeur) {
+            if (it->second.isVendeur() && it->second.getNom() == nom) listeClientsTrouves[it->first] = it->second;
+        }
+
+        else {
+            if (it->second.getNom() == nom) listeClientsTrouves[it->first] = it->second;
+        }
     }
 
     return listeClientsTrouves;

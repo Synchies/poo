@@ -7,7 +7,6 @@
 class Vendeur: public Client {
     protected:
         std::map<int, Bien> biens;
-        int azerty;
     public:
         Vendeur();
         Vendeur(int, std::string, std::string, std::string, bool = 1);

@@ -44,7 +44,7 @@ class Agence {
         void AjoutLocal(LocalPro);
         void listeClients();
         void listeBiens();
-        std::map<int, Client> findClient(std::string);
+        std::map<int, Client> findClient(std::string, bool = 0);
         void rechercherClient();
         void rechercherBien();
         void ajouterVisite();
